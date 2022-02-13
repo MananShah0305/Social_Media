@@ -103,4 +103,4 @@ function ParticlesBackground() {
     )
 }
 
-export default ParticlesBackground
+export default React.memo(ParticlesBackground)
