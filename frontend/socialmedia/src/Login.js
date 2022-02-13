@@ -6,14 +6,11 @@ import Container from '@mui/material/Container';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import Tabs from '@mui/lab/TabList';
-// import TabPanel from '@mui/lab/TabPanel';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import LoginIcon from '@mui/icons-material/Login';
 import AppRegistrationRoundedIcon from '@mui/icons-material/AppRegistrationRounded';
 import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
 import Button from '@mui/material/Button';
 import { GoogleLogin } from 'react-google-login';
 import GoogleButton from 'react-google-button'
@@ -21,13 +18,12 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import axios from './axios'
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import Divider from '@mui/material/Divider';
 
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,24 +57,10 @@ const initialRegister = {
   password: ''
 }
 
-const initialRegisterErrorText = {
-  email: '',
-  username: '',
-  password: ''
-}
-
-const initialRegisterInvalid = {
-  email: false,
-  username: false,
-  password: false
-}
-
 const initialLogin = {
   username: '',
   password: ''
 }
-
-let alert = false;
 
 function Login() {
 
@@ -95,195 +77,95 @@ function Login() {
 
   const [showPassword, setShowPassword] = useState(false)
 
-  const [register, setRegister] = useState(initialRegister)
-
-  const [registerInvalid, setRegisterInvalid] = useState(initialRegisterInvalid)
-
-  const [registerError, setRegisterError] = useState(initialRegisterErrorText)
-
   const [login, setLogin] = useState(initialLogin)
 
   const [alertStatus, setAlertStatus] = useState(false)
 
+  const [message, setMessage] = useState('')
+
+  const [statusRegister, setStatusRegister] = useState('')
+
+  const [statusLogin, setStatusLogin] = useState('')
+
+  const [alert, setAlert] = useState(null)
+
   useEffect(() => {
-    const body = {
-      email: formik.values.emailRegister,
-      username: formik.values.usernameRegister,
-      password: formik.values.passwordRegister,
-    }
-    axios.post('/signUp', body)
-      .then((res) => {
-        if (res.data.status == 'error') {
-          alert = <SweetAlert
-            error
-            title="Error!"
-            onConfirm={onConfirm}
-            customButtons={
-              <React.Fragment>
-                <Button variant="contained" onClick={onConfirm}>OK</Button>
-              </React.Fragment>
-            }>
-            {res.data.message}<span>&#128545;</span>.
-          </SweetAlert>
-        }
-        else {
-          alert = <SweetAlert
-            success
-            title="Success!"
-            onConfirm={onConfirm}
-            customButtons={
-              <React.Fragment>
-                <Button variant="contained" onClick={onConfirm}>OK</Button>
-              </React.Fragment>
-            }>
-            {res.data.message}<span>&#128512;</span>.
+    console.log('UseEffect')
+    if (statusRegister == 'error') {
+      const getAlert = () => <SweetAlert
+        error
+        title="Error!"
+        onConfirm={onConfirm}
+        customButtons={
+          <>
+            <Button variant="contained" onClick={onConfirm}>OK</Button>
+          </>
+        }>
+        {message}<span>&#128545;</span>.
+      </SweetAlert>
 
-          </SweetAlert>
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }, [alertStatus])
+      setAlert(getAlert())
+    }
+    else if (statusRegister == 'success') {
+      const getAlert = () => <SweetAlert
+        success
+        title="Success!"
+        onConfirm={onConfirm}
+        customButtons={
+          <>
+            <Button variant="contained" onClick={onConfirm}>OK</Button>
+          </>
+        }>
+        {message}<span>&#128512;</span>.
 
-  const registerInvalidate = () => {
-    if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,10})+$/.test(register.email))) {
-      setRegisterError({
-        ...registerError,
-        email: 'Invalid Email.'
-      })
-      setRegisterInvalid({
-        ...registerInvalid,
-        email: true
-      })
+      </SweetAlert>
+      setAlert(getAlert())
     }
-    else {
-      setRegisterInvalid({
-        ...registerInvalid,
-        email: false
-      })
-    }
+  }, [statusRegister])
 
-    if (register.username.length < 6) {
-      setRegisterError({
-        ...registerError,
-        username: 'Username should have more than 6 characters'
-      })
-      setRegisterInvalid({
-        ...registerInvalid,
-        username: true
-      })
-    }
-    else if (!(/^[a-z0-9_.]+$/.test(register.username)) && register.username.length >= 6) {
-      setRegisterError({
-        ...registerError,
-        username: 'Username should only be composed of letters, numbers, underscore and period.'
-      })
-      setRegisterInvalid({
-        ...registerInvalid,
-        username: true
-      })
-    }
-    else {
-      setRegisterInvalid({
-        ...registerInvalid,
-        username: false
-      })
-    }
+  useEffect(() => {
+    if (statusLogin == 'error') {
+      const getAlert = () => <SweetAlert
+        error
+        title="Error!"
+        onConfirm={onConfirm}
+        customButtons={
+          <>
+            <Button variant="contained" onClick={onConfirm}>OK</Button>
+          </>
+        }>
+        {message}<span>&#128545;</span>.
+      </SweetAlert>
 
-    if (register.password.length < 8) {
-      setRegisterError({
-        ...registerError,
-        password: 'Password should have more than 8 characters'
-      })
-      setRegisterInvalid({
-        ...registerInvalid,
-        password: true
-      })
+      setAlert(getAlert())
     }
-    else if (!(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$/.test(register.password)) && register.password.length >= 8) {
-      setRegisterError({
-        ...registerError,
-        password: 'Password should contain atleast one uppercase character, one lowercase character, one digit and one special character.'
-      })
-      setRegisterInvalid({
-        ...registerInvalid,
-        password: true
-      })
+    else if (statusLogin == 'success') {
+      navigate('/')
     }
-    else {
-      setRegisterInvalid({
-        ...registerInvalid,
-        password: false
-      })
-    }
-
-    console.log(register);
-  }
+  }, [statusLogin])
 
   const onConfirm = () => {
     setAlertStatus(false)
-    setRegister(initialRegister)
-    setRegisterInvalid(initialRegisterInvalid)
-    setRegisterError(initialRegisterErrorText)
+    setMessage("")
+    setStatusRegister("")
+    setStatusLogin("")
+    console.log(value);
+    if(value==1){
+      formik.values=initialRegister
+    }
+    else{
+      console.log(value);
+    }
     setLogin(initialLogin)
   }
 
-  const handleClickShowPassword = () => {
+  const handlePasswordVisibility = () => {
     setShowPassword(!showPassword)
   };
 
   const changeTabs = (event, newValue) => {
     setValue(newValue);
   };
-
-  const registerChange = (e) => {
-    setRegister({
-      ...register,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const registerSubmit = () => {
-
-    const body = {
-      email: register.email,
-      username: register.username,
-      password: register.password,
-    }
-
-    registerInvalidate()
-
-    console.log(registerInvalid);
-    if (Object.values(registerInvalid).every(item => item)) {
-      setAlertStatus(true)
-      // if (true) {
-      //   axios.post('/signUp', body)
-      //     .then((res) => {
-      //       setAlertStatus(true)
-      //       if (res.data.status == 'error') {
-      //         alert = <SweetAlert
-      //           error
-      //           title="Error!"
-      //           onConfirm={onConfirm} >
-      //           {res.data.message}<span>&#128545;</span>.
-      //         </SweetAlert>
-      //       }
-      //       else {
-      //         alert = <SweetAlert
-      //           success
-      //           title="Success!"
-      //           onConfirm={onConfirm} >
-      //           {res.data.message}<span>&#128512;</span>.
-      //         </SweetAlert>
-      //       }
-      //     })
-      //     .catch(err => {
-      //       console.log(err);
-      //     })
-      // }
-    }
-  }
 
   const loginChange = (e) => {
     setLogin({
@@ -294,29 +176,14 @@ function Login() {
 
   const loginSubmit = () => {
     const body = {
-      username: register.username,
-      password: register.password
+      username: login.username,
+      password: login.password
     }
     axios.post('/signIn', body)
       .then((res) => {
-        if (res.data.status == 'error') {
-          setAlertStatus(true)
-          alert = <SweetAlert
-            error
-            title='Error!'
-            onConfirm={onConfirm}
-            customButtons={
-              <React.Fragment>
-                <Button variant="contained" onClick={onConfirm}>OK</Button>
-              </React.Fragment>
-            }
-          >
-            {res.data.message}<span>&#128512;</span>.
-          </SweetAlert>
-        }
-        else {
-          navigate('/');
-        }
+        setAlertStatus(true)
+        setMessage(res.data.message)
+        setStatusLogin(res.data.status)
       })
       .catch(err => {
         console.log(err);
@@ -331,66 +198,95 @@ function Login() {
   }
 
   const validationSchema = yup.object({
-    emailRegister: yup.string().required('Email is required').email('Invalid Email'),
-    usernameRegister: yup.string().required('Username is required').min(6, 'Username must have atleast 6 characters').max(20, 'Username must have atmost 20 characters').matches(/^[a-z0-9_.]+$/, 'Username should only be composed of letters, numbers, underscore and period.'),
-    passwordRegister: yup.string().required('Password is required').min(8, 'Password must have atleast 8 characters').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$/, 'Password should contain atleast one uppercase character, one lowercase character, one digit and one special character.')
+    email: yup.string().required('Email is required').email('Invalid Email'),
+    username: yup.string().required('Username is required').min(6, 'Username must have atleast 6 characters').max(20, 'Username must have atmost 20 characters').matches(/^[a-zA-Z0-9_.]+$/, 'Username should only be composed of letters, numbers, underscore and period.'),
+    password: yup.string().required('Password is required').min(8, 'Password must have atleast 8 characters').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$/, 'Password should contain atleast one uppercase character, one lowercase character, one digit and one special character.')
   })
 
   const formik = useFormik({
     initialValues: {
-      emailRegister: '',
-      usernameRegister: '',
-      passwordRegister: '',
-      usernameLogin: '',
-      passwordLogin: '',
+      email: '',
+      username: '',
+      password: '',
     },
     onSubmit: () => {
-      setAlertStatus(true)
+      const body = {
+        email: formik.values.email,
+        username: formik.values.username,
+        password: formik.values.password,
+      }
+      axios.post('/signUp', body)
+        .then((res) => {
+          console.log('Success')
+          setAlertStatus(true)
+          setMessage(res.data.message)
+          setStatusRegister(res.data.status)
+        })
+        .catch(err => {
+          console.log(err);
+        })
     },
     validationSchema: validationSchema
   });
 
   return (
     <div className='login'>
+      {
+        alertStatus && alert
+      }
       <Particles></Particles>
       <div style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh', left: '37vw' }}>
         <Container maxWidth="sm">
           <TabContext value={value}>
             <Box sx={{ borderRadius: '20px', border: '4px solid #1d8be4', bgcolor: '#FFFFFF', height: '62vh', width: '100%' }}>
-              <Tabs centered value={value} onChange={changeTabs} aria-label="basic tabs example">
+              <Tabs centered value={Number(value)} onChange={changeTabs} aria-label="basic tabs example">
                 <Tab icon={<LoginIcon />} iconPosition="end" label="Login" {...a11yProps(0)} />
                 <Tab icon={<AppRegistrationRoundedIcon />} iconPosition="end" label="Register" {...a11yProps(1)} />
               </Tabs>
-              <TabPanel value={value} index={0} style={{ padding: '0px' }}>
-                <form onSubmit={formik.handleSubmit} fullWidth style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }} variant='outlined'>
+              <TabPanel value={Number(value)} index={0} style={{ padding: '0px' }}>
+                <form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }} variant='outlined'>
 
                   <TextField
-                    name='usernameLogin'
-                    value={formik.values.usernameLogin}
-                    onChange={formik.handleChange}
-                    id="outlined-basic"
+                    name='username'
+                    value={login.username}
+                    onChange={loginChange}
                     label="Username"
                     variant="outlined"
                     fullWidth />
 
                   <TextField
-                    name='passwordLogin'
-                    value={formik.values.passwordLogin}
-                    onChange={formik.handleChange}
-                    id="outlined-basic"
+                    name='password'
+                    type={showPassword?'text':'password'}
+                    value={login.password}
+                    onChange={loginChange}
                     label="Password"
                     variant="outlined"
-                    fullWidth />
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton
+                            aria-label='toggle password visibility'
+                            onClick={handlePasswordVisibility}>
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }} />
 
-                  <Button type='submit' style={{ padding: '10px' }} /*onClick={loginSubmit}*/ variant="contained" endIcon={<LoginIcon />} fullWidth>
+                  <Button type='submit' style={{ padding: '10px' }} onClick={loginSubmit} variant="contained" endIcon={<LoginIcon />} fullWidth>
                     Log In
                   </Button>
 
-                  <p style={{ margin: '0px auto' }}>OR</p>
+                  <div style={{ display: 'flex' }}>
+                    <Divider></Divider>
+                    <p style={{ margin: '0px auto' }}>or login with</p>
+                    <Divider></Divider>
+                  </div>
 
                   <GoogleLogin
                     clientId=''
-                    render={renderProps => (
+                    render={()=> (
                       <GoogleButton style={{ width: '100%' }}
                         onClick={() => { console.log('Google button clicked') }}
                       />
@@ -402,51 +298,59 @@ function Login() {
                     cookiePolicy={"single_host_origin"}
                   />
 
+                  <p style={{ margin: '0px' }}>Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#0089ff' }} onClick={() => setValue(1)}>Register Now</span></p>
+
                 </form>
               </TabPanel>
 
-              <TabPanel value={value} index={1} style={{ padding: '0px' }}>
-                <form onSubmit={formik.handleSubmit} fullWidth style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
+              <TabPanel value={Number(value)} index={1} style={{ padding: '0px' }}>
+                <form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
 
                   <TextField
-                    error={registerInvalid.email}
-                    helperText={registerInvalid.email == true && registerError.email}
-                    name='emailRegister'
-                    value={formik.values.emailRegister}
+                    name='email'
+                    value={formik.values.email}
                     onChange={formik.handleChange}
                     label="Email Id"
                     variant="outlined"
                     fullWidth
-                    error={formik.touched.emailRegister && Boolean(formik.errors.emailRegister)}
-                    helperText={formik.touched.emailRegister && formik.errors.emailRegister}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
                     onBlur={formik.handleBlur}
                   />
 
                   <TextField
-                    error={registerInvalid.username}
-                    helperText={registerInvalid.username == true && registerError.username}
-                    name='usernameRegister'
-                    value={formik.values.usernameRegister}
+                    name='username'
+                    value={formik.values.username}
                     onChange={formik.handleChange}
                     label="Username"
                     variant="outlined"
                     fullWidth
-                    error={formik.touched.usernameRegister && Boolean(formik.errors.usernameRegister)}
-                    helperText={formik.touched.usernameRegister && formik.errors.usernameRegister}
+                    error={formik.touched.username && Boolean(formik.errors.username)}
+                    helperText={formik.touched.username && formik.errors.username}
                     onBlur={formik.handleBlur} />
 
                   <TextField
-                    error={registerInvalid.password}
-                    helperText={registerInvalid.password == true && registerError.password}
-                    name='passwordRegister'
-                    value={formik.values.passwordRegister}
+                    type={showPassword ? 'text' : 'password'}
+                    name='password'
+                    value={formik.values.password}
                     onChange={formik.handleChange}
                     label="Password"
                     variant="outlined"
                     fullWidth
-                    error={formik.touched.passwordRegister && Boolean(formik.errors.passwordRegister)}
-                    helperText={formik.touched.passwordRegister && formik.errors.passwordRegister}
+                    error={formik.touched.password && Boolean(formik.errors.password)}
+                    helperText={formik.touched.password && formik.errors.password}
                     onBlur={formik.handleBlur}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton
+                            aria-label='toggle password visibility'
+                            onClick={handlePasswordVisibility}>
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
 
                   <Button type='submit' style={{ padding: '10px' }} /*onClick={registerSubmit}*/ variant="contained" endIcon={<AppRegistrationRoundedIcon />} fullWidth>
@@ -458,7 +362,6 @@ function Login() {
             </Box>
           </TabContext>
         </Container>
-        {alertStatus && alert}
       </div>
     </div>
   )
