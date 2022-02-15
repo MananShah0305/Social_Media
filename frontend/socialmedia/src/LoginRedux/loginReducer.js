@@ -10,14 +10,17 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case LOGIN_USER:
-            console.log(usernameLogin)
+            sessionStorage.setItem('username', usernameLogin);
+            sessionStorage.setItem('isLoggedIn', true);
             return {
                 ...state,
-                username: usernameLogin,
-                isLoggedIn: true,
+                username: sessionStorage.getItem('username'),
+                isLoggedIn: sessionStorage.getItem('isLoggedIn')
             }
 
         case LOGOUT_USER:
+            sessionStorage.removeItem('username');
+            sessionStorage.removeItem('isLoggedIn');
             return {
                 ...state,
                 username: '',

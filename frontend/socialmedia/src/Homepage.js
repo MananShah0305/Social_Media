@@ -18,14 +18,14 @@ function Homepage(props) {
 
     return (
         <div style={{ backgroundColor: '#77b7ff', width: '100vw', height: '100vh', fontWeight: 'bold', fontSize: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            Welcome {props.usernameLogin}
+            Welcome {props.username}
         </div>
     )
 }
 
 const mapStateToProps = (state) => {
     return {
-        usernameLogin: state.usernameLogin,
+        username: state.username,
         isLoggedIn: state.isLoggedIn
     }
 }

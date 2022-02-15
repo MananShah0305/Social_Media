@@ -27,7 +27,7 @@ import Divider from '@mui/material/Divider';
 import { loginUser } from './LoginRedux/loginActions.js'
 import { connect } from 'react-redux'
 
-let userLogin;
+let usernameLogin;
 
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -142,10 +142,6 @@ function Login(props) {
 
       setAlert(getAlert())
     }
-    else if (statusLogin == 'success') {
-      props.loginUser()
-      navigate('/')
-    }
   }, [statusLogin])
 
   const onConfirm = () => {
@@ -185,7 +181,9 @@ function Login(props) {
     }
     axios.post('/signIn', body)
       .then((res) => {
-        userLogin = body.username
+        usernameLogin = body.username
+        props.loginUser()
+        navigate('/')
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
@@ -196,7 +194,7 @@ function Login(props) {
   }
 
   const responseGoogleSuccess = (res) => {
-    userLogin = res.profileObj.givenName + ' ' + res.profileObj.familyName
+    usernameLogin = res.profileObj.givenName + ' ' + res.profileObj.familyName
     props.loginUser()
     navigate('/')
   }
@@ -373,7 +371,7 @@ function Login(props) {
   )
 }
 
-export const usernameLogin = userLogin
+export { usernameLogin }
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -382,4 +380,5 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(null, mapDispatchToProps)(Login)
+
 
