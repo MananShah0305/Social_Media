@@ -24,6 +24,9 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import Divider from '@mui/material/Divider';
+import {loginUser} from './LoginRedux/loginActions.js'
+
+let userLogin;
 
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -181,6 +184,7 @@ function Login() {
     }
     axios.post('/signIn', body)
       .then((res) => {
+        userLogin=body.username
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
@@ -367,4 +371,13 @@ function Login() {
   )
 }
 
-export default Login
+export const usernameLogin=userLogin
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loginUser:()=>dispatch(loginUser())
+  }
+}
+
+export default connect(mapDispatchToProps)(Login)
+
