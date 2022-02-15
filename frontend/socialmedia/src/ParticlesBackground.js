@@ -4,22 +4,22 @@ import './Login.css'
 
 function ParticlesBackground() {
 
-    const particlesInit = (main) => {
-        // console.log(main);
+    // const particlesInit = (main) => {
+    //     // console.log('Init');
 
-        // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
-    };
+    //     // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
+    // };
 
-    const particlesLoaded = (container) => {
-        // console.log(container);
-    };
+    // const particlesLoaded = (container) => {
+    //     // console.log('Load');
+    // };
 
     return (
         <>
             <Particles
                 id="tsparticles"
-                init={particlesInit}
-                loaded={particlesLoaded}
+                // init={particlesInit}
+                // loaded={particlesLoaded}
                 style={{backgroundColor:'green'}}
                 options={{
                     // background: {
