@@ -24,7 +24,8 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import Divider from '@mui/material/Divider';
-import {loginUser} from './LoginRedux/loginActions.js'
+import { loginUser } from './LoginRedux/loginActions.js'
+import { connect } from 'react-redux'
 
 let userLogin;
 
@@ -65,7 +66,7 @@ const initialLogin = {
   password: ''
 }
 
-function Login() {
+function Login(props) {
 
   function a11yProps(index) {
     return {
@@ -93,7 +94,6 @@ function Login() {
   const [alert, setAlert] = useState(null)
 
   useEffect(() => {
-    console.log('UseEffect')
     if (statusRegister == 'error') {
       const getAlert = () => <SweetAlert
         error
@@ -143,6 +143,7 @@ function Login() {
       setAlert(getAlert())
     }
     else if (statusLogin == 'success') {
+      props.loginUser()
       navigate('/')
     }
   }, [statusLogin])
@@ -153,10 +154,10 @@ function Login() {
     setStatusRegister("")
     setStatusLogin("")
     console.log(value);
-    if(value==1){
-      formik.values=initialRegister
+    if (value == 1) {
+      formik.values = initialRegister
     }
-    else{
+    else {
       console.log(value);
     }
     setLogin(initialLogin)
@@ -184,7 +185,7 @@ function Login() {
     }
     axios.post('/signIn', body)
       .then((res) => {
-        userLogin=body.username
+        userLogin = body.username
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
@@ -194,8 +195,10 @@ function Login() {
       })
   }
 
-  const responseGoogleSuccess = (response) => {
-    console.log(response);
+  const responseGoogleSuccess = (res) => {
+    userLogin = res.profileObj.givenName + ' ' + res.profileObj.familyName
+    props.loginUser()
+    navigate('/')
   }
   const responseGoogleFailure = (response) => {
     console.log(response);
@@ -260,7 +263,7 @@ function Login() {
 
                   <TextField
                     name='password'
-                    type={showPassword?'text':'password'}
+                    type={showPassword ? 'text' : 'password'}
                     value={login.password}
                     onChange={loginChange}
                     label="Password"
@@ -289,16 +292,15 @@ function Login() {
                   </div>
 
                   <GoogleLogin
-                    clientId=''
-                    render={()=> (
+                    clientId={process.env.REACT_APP_CLIENT_ID}
+                    render={(renderProps) => (
                       <GoogleButton style={{ width: '100%' }}
-                        onClick={() => { console.log('Google button clicked') }}
+                        onClick={renderProps.onClick}
                       />
                     )}
                     buttonText="Sign In with Google"
                     onSuccess={responseGoogleSuccess}
                     onFailure={responseGoogleFailure}
-                    isSignedIn={true}
                     cookiePolicy={"single_host_origin"}
                   />
 
@@ -371,13 +373,13 @@ function Login() {
   )
 }
 
-export const usernameLogin=userLogin
+export const usernameLogin = userLogin
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    loginUser:()=>dispatch(loginUser())
+    loginUser: () => dispatch(loginUser())
   }
 }
 
-export default connect(mapDispatchToProps)(Login)
+export default connect(null, mapDispatchToProps)(Login)
 
