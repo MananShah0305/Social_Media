@@ -26,6 +26,11 @@ import * as yup from 'yup'
 import Divider from '@mui/material/Divider';
 import { loginUser } from './LoginRedux/loginActions.js'
 import { connect } from 'react-redux'
+import {Modal,Form } from 'react-bootstrap'
+import PersonIcon from '@mui/icons-material/Person';
+import Avatar from '@mui/material/Avatar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ButtonBootstrap from 'react-bootstrap/Button'; //custom name given by me
 
 let usernameLogin;
 
@@ -92,6 +97,8 @@ function Login(props) {
   const [statusLogin, setStatusLogin] = useState('')
 
   const [alert, setAlert] = useState(null)
+
+  const [modalShow, setModalShow] = React.useState(false);
 
   useEffect(() => {
     if (statusRegister == 'error') {
@@ -216,12 +223,14 @@ function Login(props) {
       email: '',
       username: '',
       password: '',
+      profilePic:''
     },
     onSubmit: () => {
       const body = {
         email: formik.values.email,
         username: formik.values.username,
         password: formik.values.password,
+        profilePic:formik.values.profilePic
       }
       axios.post('/signUp', body)
         .then((res) => {
@@ -229,6 +238,7 @@ function Login(props) {
           setAlertStatus(true)
           setMessage(res.data.message)
           setStatusRegister(res.data.status)
+          setModalShow(false)
         })
         .catch(err => {
           console.log(err);
@@ -311,7 +321,7 @@ function Login(props) {
               </TabPanel>
 
               <TabPanel value={Number(value)} index={1} style={{ padding: '0px' }}>
-                <form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
+                <Form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
 
                   <TextField
                     name='email'
@@ -360,11 +370,43 @@ function Login(props) {
                     }}
                   />
 
-                  <Button type='submit' style={{ padding: '10px' }} /*onClick={registerSubmit}*/ variant="contained" endIcon={<AppRegistrationRoundedIcon />} fullWidth>
+                  <Button onClick={() => setModalShow(true)} style={{ padding: '10px' }} variant="contained" endIcon={<AppRegistrationRoundedIcon />} fullWidth>
                     Register
                   </Button>
 
-                </form>
+                  <Modal
+                    show={modalShow}
+                    size="md"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                  >
+                    <Modal.Header >
+                      <Modal.Title id="contained-modal-title-vcenter" style={{color:'#4181f6'}}>
+                        Add Profile Picture
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{height:'280px'}}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between',height:'100%' }}>
+                        <Avatar sx={{ width: 160, height: 160 }}>
+                          <PersonIcon sx={{ width: 120, height: 120 }}/>
+                        </Avatar>
+                        <Form.Group className="position-relative mb-3">
+                          <Form.Control
+                            type="file"
+                            name="profilePic"
+                            value={formik.values.profilePic}
+                            onChange={formik.handleChange}
+                          />
+                        </Form.Group>
+                      </div>
+                    </Modal.Body>
+                    <Modal.Footer style={{display:'flex', justifyContent:'flex-end',padding:'20px'}}>
+                      <ButtonBootstrap type='submit' variant="success" style={{width:'100px',color:'white'}}>OK</ButtonBootstrap>
+                      <ButtonBootstrap variant="danger" style={{width:'100px', color:'white'}} onClick={() => setModalShow(false)}>Close</ButtonBootstrap>
+                    </Modal.Footer>
+                  </Modal>
+
+                </Form>
               </TabPanel>
             </Box>
           </TabContext>

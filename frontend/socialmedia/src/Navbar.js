@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Navbar.css'
 import IconButton from '@mui/material/IconButton';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -17,8 +17,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import { red, blue, green, orange } from '@mui/material/colors';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { styled, useTheme } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
+import { styled } from '@mui/material/styles';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -26,7 +25,15 @@ import Tooltip from '@mui/material/Tooltip';
 import axios from './axios.js'
 
 function Navbar(props) {
-    const [state, setState] = React.useState({ right: false });
+    const [state, setState] = useState({ right: false });
+    const [userInfo, setuserInfo] = useState([])
+    useEffect(() => {
+        axios.get('/username')
+            .then(res => {
+                setuserInfo(res.data.allUserInfo)
+            })
+            .catch(err => console.log(err))
+    }, [])
 
     const toggleDrawer = (anchor, open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -45,39 +52,39 @@ function Navbar(props) {
         >
             <Divider></Divider>
             <List>
-                <ListItem button>
+                <ListItem>
                     <ListItemIcon>
                         <Avatar sx={{ bgcolor: red[500] }}>D</Avatar>
                     </ListItemIcon>
                     <ListItemText primary='Darshil Shah' />
-                    <ListItemIcon>
+                    <ListItemIcon button>
                         <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
                     </ListItemIcon>
                 </ListItem>
-                <ListItem button >
+                <ListItem>
                     <ListItemIcon>
                         <Avatar sx={{ bgcolor: blue[500] }}>J</Avatar>
                     </ListItemIcon>
                     <ListItemText primary='Jimit Kapadia' />
-                    <ListItemIcon>
+                    <ListItemIcon button>
                         <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
                     </ListItemIcon>
                 </ListItem>
-                <ListItem button >
+                <ListItem >
                     <ListItemIcon>
                         <Avatar sx={{ bgcolor: green[500] }}>A</Avatar>
                     </ListItemIcon>
                     <ListItemText primary='Aditya Dalal' />
-                    <ListItemIcon>
+                    <ListItemIcon button>
                         <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
                     </ListItemIcon>
                 </ListItem>
-                <ListItem button>
+                <ListItem>
                     <ListItemIcon>
                         <Avatar sx={{ bgcolor: orange[500] }}>U</Avatar>
                     </ListItemIcon>
                     <ListItemText primary='Utkarsh Shah' />
-                    <ListItemIcon>
+                    <ListItemIcon button>
                         <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
                     </ListItemIcon>
                 </ListItem>
@@ -98,7 +105,7 @@ function Navbar(props) {
     const handleDrawerClose = () => {
         setState({ right: false })
     };
-    
+
     return (
         <>
             <div class='navbar'>
@@ -140,7 +147,7 @@ function Navbar(props) {
                                     <IconButton onClick={handleDrawerClose} style={{ backgroundColor: 'rgb(65, 129, 246)', color: 'white' }}>
                                         <ChevronRightIcon />
                                     </IconButton>
-                                    <Box style={{borderRadius:'20px',display: 'flex', alignItems: 'flex-end', flex: '0.94', justifyContent: 'center', backgroundColor: 'white' }}>
+                                    <Box style={{ borderRadius: '20px', display: 'flex', alignItems: 'flex-end', flex: '0.94', justifyContent: 'center', backgroundColor: 'white' }}>
                                         {/* <SavedSearchIcon></SavedSearchIcon> */}
                                         {/* <TextField
                                             name='search'
@@ -148,14 +155,14 @@ function Navbar(props) {
                                             // onChange={loginChange}
                                             label="Search for Friends"
                                             variant="outlined" /> */}
-                                        <InputGroup style={{ height:'50px ',borderRadius:'20px'}}>
+                                        <InputGroup style={{ height: '50px ', borderRadius: '20px' }}>
                                             <FormControl
                                                 placeholder="Search for friends..."
                                                 aria-label="friends"
                                                 aria-describedby="basic-addon1"
-                                                style={{ borderRadius:'20px' }}
+                                                style={{ borderRadius: '20px' }}
                                             />
-                                            <InputGroup.Text id="basic-addon1" style={{ height:'50px',backgroundColor: 'rgb(65, 129, 246)', cursor: 'pointer',borderTopRightRadius:'20px',borderBottomRightRadius:'20px'  }}><SearchIcon style={{ color: 'white' }}></SearchIcon></InputGroup.Text>
+                                            <InputGroup.Text id="basic-addon1" style={{ height: '50px', backgroundColor: 'rgb(65, 129, 246)', cursor: 'pointer', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}><SearchIcon style={{ color: 'white' }}></SearchIcon></InputGroup.Text>
                                         </InputGroup>
                                     </Box>
                                 </DrawerHeader>
