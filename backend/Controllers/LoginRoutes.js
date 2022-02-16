@@ -14,6 +14,11 @@ export const getCredentials = (req, res) => {
         })
 }
 
+export const getUsername = async (req, res) => {
+    const usernames = await LoginModel.find( {}, { username:1} )
+    res.status(200).json({ allUsernames:usernames })
+}
+
 export const signUp = async (req, res) => {
     const { email, username, password } = req.body
     const errors = validationResult(req);

@@ -1,11 +1,13 @@
 import express from 'express'
-import { getCredentials, signUp,signIn } from '../Controllers/LoginRoutes.js'
+import { getCredentials,getUsername, signUp,signIn } from '../Controllers/LoginRoutes.js'
 import validator from 'express-validator';
 const { check } = validator;
 
 const router = express.Router()
 
 router.route('/loginCredentials').get(getCredentials)
+
+router.route('/username').get(getUsername)
 
 router.route('/signUp').post(
     [

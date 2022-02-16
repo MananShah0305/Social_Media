@@ -8,20 +8,20 @@ function Homepage(props) {
     let navigate = useNavigate();
 
     useEffect(() => {
-        if (sessionStorage?.getItem('isLoggedIn')==false) {
-            console.log(props.isLoggedIn)
+        if (sessionStorage?.getItem('isLoggedIn')==true) {
+            console.log(sessionStorage?.getItem('isLoggedIn'))
             navigate('/login')
         }
         else {
-            console.log(props.isLoggedIn)
+            console.log(sessionStorage?.getItem('isLoggedIn'))
         }
     }, [])
 
     return (
         <>
-            <Navbar></Navbar>
-            <div style={{ backgroundColor: '#77b7ff', height: '100vh', fontWeight: 'bold', fontSize: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                Welcome {props.username}
+            <Navbar username={props.username}></Navbar>
+            <div style={{ backgroundColor: 'white', height: '100vh', fontWeight: 'bold', fontSize: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                
             </div>
         </>
     )
