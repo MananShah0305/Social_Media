@@ -12,6 +12,7 @@ const reducer = (state = initialState, action) => {
         case LOGIN_USER:
             sessionStorage.setItem('username', usernameLogin);
             sessionStorage.setItem('isLoggedIn', true);
+            console.log(sessionStorage.getItem('isLoggedIn'))
             return {
                 ...state,
                 username: sessionStorage.getItem('username'),

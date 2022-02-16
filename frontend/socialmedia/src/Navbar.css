@@ -1,0 +1,9 @@
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px;
+    box-shadow: 3px 3px 8px grey;
+    position: sticky;
+    top:0px;
+}

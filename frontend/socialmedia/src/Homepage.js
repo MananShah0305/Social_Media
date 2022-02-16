@@ -1,13 +1,14 @@
-import React , { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux'
+import Navbar from './Navbar.js';
 
 function Homepage(props) {
 
     let navigate = useNavigate();
 
     useEffect(() => {
-        if (props.isLoggedIn ==false) {
+        if (sessionStorage?.getItem('isLoggedIn')==false) {
             console.log(props.isLoggedIn)
             navigate('/login')
         }
@@ -17,9 +18,12 @@ function Homepage(props) {
     }, [])
 
     return (
-        <div style={{ backgroundColor: '#77b7ff', width: '100vw', height: '100vh', fontWeight: 'bold', fontSize: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            Welcome {props.username}
-        </div>
+        <>
+            <Navbar></Navbar>
+            <div style={{ backgroundColor: '#77b7ff', height: '100vh', fontWeight: 'bold', fontSize: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                Welcome {props.username}
+            </div>
+        </>
     )
 }
 

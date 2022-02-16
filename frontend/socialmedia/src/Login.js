@@ -142,6 +142,11 @@ function Login(props) {
 
       setAlert(getAlert())
     }
+    else if (statusLogin == 'success') {
+      props.loginUser()
+      navigate('/')
+    }
+
   }, [statusLogin])
 
   const onConfirm = () => {
@@ -182,8 +187,6 @@ function Login(props) {
     axios.post('/signIn', body)
       .then((res) => {
         usernameLogin = body.username
-        props.loginUser()
-        navigate('/')
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
