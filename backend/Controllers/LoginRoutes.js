@@ -36,13 +36,18 @@ export const signUp = async (req, res) => {
             return res.status(200).json({ message: 'Username already exists', status: 'error' })
         }
         else {
-            const passwordEncrypted = await bcrypt.hash(password, 12)
-            const loginDetails = await new LoginModel({
-                email, username, password: passwordEncrypted,profilePic
-            })
-
-            loginDetails.save()
-            return res.status(200).json({ message: 'You are registered successfully', status: 'success' })
+            if(req.body.modalShow==true){
+                res.status(200).json({modal:true})
+            }
+            else{
+                const passwordEncrypted = await bcrypt.hash(password, 12)
+                const loginDetails = await new LoginModel({
+                    email, username, password: passwordEncrypted,profilePic
+                })
+    
+                loginDetails.save()
+                return res.status(200).json({ message: 'You are registered successfully', status: 'success' })
+            }
         }
     }
 }

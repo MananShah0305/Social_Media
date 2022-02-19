@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './Login.css'
 import Particles from './ParticlesBackground.js';
 import Box from '@mui/material/Box';
@@ -26,11 +26,15 @@ import * as yup from 'yup'
 import Divider from '@mui/material/Divider';
 import { loginUser } from './LoginRedux/loginActions.js'
 import { connect } from 'react-redux'
-import {Modal,Form } from 'react-bootstrap'
+import { Modal, Form } from 'react-bootstrap'
 import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ButtonBootstrap from 'react-bootstrap/Button'; //custom name given by me
+import ButtonBootstrap from 'react-bootstrap/Button'; //custom name given by me 
+import 'dropify/dist/css/dropify.css';
+import 'dropify/dist/js/dropify.js';
+import $ from 'jquery'
+import Tooltip from '@mui/material/Tooltip';
 
 let usernameLogin;
 
@@ -98,7 +102,11 @@ function Login(props) {
 
   const [alert, setAlert] = useState(null)
 
-  const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = useState(false);
+
+  const [profilePic, setProfilePic] = useState(null)
+
+  const profilePicRef = useRef(null)
 
   useEffect(() => {
     if (statusRegister == 'error') {
@@ -116,6 +124,7 @@ function Login(props) {
 
       setAlert(getAlert())
     }
+
     else if (statusRegister == 'success') {
       const getAlert = () => <SweetAlert
         success
@@ -127,11 +136,15 @@ function Login(props) {
           </>
         }>
         {message}<span>&#128512;</span>.
-
       </SweetAlert>
-      setAlert(getAlert())
+      setAlert(getAlert()) 
     }
+
   }, [statusRegister])
+
+  // useEffect(() => {
+
+  // }, [modalShow])
 
   useEffect(() => {
     if (statusLogin == 'error') {
@@ -179,6 +192,35 @@ function Login(props) {
     setValue(newValue);
   };
 
+  const registerChange = (e) => {
+    const reader=new FileReader();
+    reader.onload=()=>{
+      if(reader.readyState==2){
+        setProfilePic(reader.result)  
+      }
+    }
+    reader.readAsDataURL(e.target.files[0])
+  }
+
+  const registerUser = () => {
+    const body = {
+      email: formik.values.email,
+      username: formik.values.username,
+      password: formik.values.password,
+      profilePic: profilePic,
+    }
+    axios.post('/signUp', body)
+      .then((res) => {
+        setAlertStatus(true)
+        setMessage(res.data.message)
+        setStatusRegister(res.data.status)
+        setModalShow(false)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
   const loginChange = (e) => {
     setLogin({
       ...login,
@@ -223,22 +265,23 @@ function Login(props) {
       email: '',
       username: '',
       password: '',
-      profilePic:''
     },
     onSubmit: () => {
       const body = {
         email: formik.values.email,
         username: formik.values.username,
         password: formik.values.password,
-        profilePic:formik.values.profilePic
+        modalShow: true
       }
       axios.post('/signUp', body)
         .then((res) => {
-          console.log('Success')
-          setAlertStatus(true)
+          console.log(res.data.modal)
+          if (res.data.status == 'error') {
+            setAlertStatus(true)
+          }
           setMessage(res.data.message)
           setStatusRegister(res.data.status)
-          setModalShow(false)
+          setModalShow(res.data.modal)
         })
         .catch(err => {
           console.log(err);
@@ -247,12 +290,14 @@ function Login(props) {
     validationSchema: validationSchema
   });
 
+  $('.dropify').dropify();
+
   return (
     <div className='login'>
       {
         alertStatus && alert
       }
-      <Particles></Particles>
+      {/* <Particles></Particles> */}
       <div style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh', left: '37vw' }}>
         <Container maxWidth="sm">
           <TabContext value={value}>
@@ -370,7 +415,7 @@ function Login(props) {
                     }}
                   />
 
-                  <Button onClick={() => setModalShow(true)} style={{ padding: '10px' }} variant="contained" endIcon={<AppRegistrationRoundedIcon />} fullWidth>
+                  <Button type='submit' style={{ padding: '10px' }} variant="contained" endIcon={<AppRegistrationRoundedIcon />} fullWidth>
                     Register
                   </Button>
 
@@ -381,28 +426,31 @@ function Login(props) {
                     centered
                   >
                     <Modal.Header >
-                      <Modal.Title id="contained-modal-title-vcenter" style={{color:'#4181f6'}}>
+                      <Modal.Title id="contained-modal-title-vcenter" style={{ color: '#4181f6' }}>
                         Add Profile Picture
                       </Modal.Title>
                     </Modal.Header>
-                    <Modal.Body style={{height:'280px'}}>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between',height:'100%' }}>
-                        <Avatar sx={{ width: 160, height: 160 }}>
-                          <PersonIcon sx={{ width: 120, height: 120 }}/>
-                        </Avatar>
+                    <Modal.Body style={{ height: '240px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                        <Tooltip title="Click to add a profile picture" placement="bottom">
+                          <Avatar style={{ cursor: 'pointer' }} onClick={() => profilePicRef.current.click()} sx={{ width: 160, height: 160 }} src={profilePic} >
+                            {profilePic == null && <PersonIcon sx={{ width: 120, height: 120 }} />}
+                          </Avatar>
+                        </Tooltip>
                         <Form.Group className="position-relative mb-3">
-                          <Form.Control
+                          {/* <Form.Control
                             type="file"
                             name="profilePic"
-                            value={formik.values.profilePic}
-                            onChange={formik.handleChange}
-                          />
+                            value={profilePic}
+                            onChange={registerChange}
+                          /> */}
+                          <input style={{ display: 'none' }} ref={profilePicRef} type="file" onChange={registerChange} />
                         </Form.Group>
                       </div>
                     </Modal.Body>
-                    <Modal.Footer style={{display:'flex', justifyContent:'flex-end',padding:'20px'}}>
-                      <ButtonBootstrap type='submit' variant="success" style={{width:'100px',color:'white'}}>OK</ButtonBootstrap>
-                      <ButtonBootstrap variant="danger" style={{width:'100px', color:'white'}} onClick={() => setModalShow(false)}>Close</ButtonBootstrap>
+                    <Modal.Footer style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px' }}>
+                      <ButtonBootstrap onClick={registerUser} variant="success" style={{ width: '100px', color: 'white' }}>OK</ButtonBootstrap>
+                      <ButtonBootstrap variant="danger" style={{ width: '100px', color: 'white' }} onClick={() => setModalShow(false)}>Close</ButtonBootstrap>
                     </Modal.Footer>
                   </Modal>
 

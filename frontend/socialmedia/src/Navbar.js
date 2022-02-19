@@ -155,12 +155,12 @@ function Navbar(props) {
                                             // onChange={loginChange}
                                             label="Search for Friends"
                                             variant="outlined" /> */}
-                                        <InputGroup style={{ height: '50px ', borderRadius: '20px' }}>
+                                        <InputGroup style={{ height: '50px '}}>
                                             <FormControl
                                                 placeholder="Search for friends..."
                                                 aria-label="friends"
                                                 aria-describedby="basic-addon1"
-                                                style={{ borderRadius: '20px' }}
+                                                style={{ borderTopLeftRadius: '20px',borderBottomLeftRadius: '20px' }}
                                             />
                                             <InputGroup.Text id="basic-addon1" style={{ height: '50px', backgroundColor: 'rgb(65, 129, 246)', cursor: 'pointer', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}><SearchIcon style={{ color: 'white' }}></SearchIcon></InputGroup.Text>
                                         </InputGroup>
