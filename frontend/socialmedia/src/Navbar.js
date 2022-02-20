@@ -26,11 +26,11 @@ import axios from './axios.js'
 
 function Navbar(props) {
     const [state, setState] = useState({ right: false });
-    const [userInfo, setuserInfo] = useState([])
+    const [userInfo, setUserInfo] = useState({})
     useEffect(() => {
         axios.get('/username')
             .then(res => {
-                setuserInfo(res.data.allUserInfo)
+                setUserInfo(res.data.allUserInfo[0])
             })
             .catch(err => console.log(err))
     }, [])
@@ -109,11 +109,14 @@ function Navbar(props) {
     return (
         <>
             <div class='navbar'>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: '0.11' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: '0.19' }}>
+                    <img src={userInfo.profilePic} alt="Profile Pic" width='50' height='50' style={{borderRadius:'40px'}}/>
+                    <h5 style={{ margin: '0px' }}>Welcome {userInfo.username} &#128516;</h5>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: '0.1' }}>
                     <img src="https://cdn.pixabay.com/photo/2022/01/26/23/18/instagram-6970242__340.jpg" alt="" height='50' width='50' />
                     <p style={{ margin: '0px' }}>Social Media</p>
                 </div>
-                <h2 style={{ margin: '0px' }}>Welcome {props.username} !</h2>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: '0.22' }}>
                     <Tooltip title="Home" placement="bottom">
                         <IconButton>
@@ -155,12 +158,12 @@ function Navbar(props) {
                                             // onChange={loginChange}
                                             label="Search for Friends"
                                             variant="outlined" /> */}
-                                        <InputGroup style={{ height: '50px '}}>
+                                        <InputGroup style={{ height: '50px ' }}>
                                             <FormControl
                                                 placeholder="Search for friends..."
                                                 aria-label="friends"
                                                 aria-describedby="basic-addon1"
-                                                style={{ borderTopLeftRadius: '20px',borderBottomLeftRadius: '20px' }}
+                                                style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px' }}
                                             />
                                             <InputGroup.Text id="basic-addon1" style={{ height: '50px', backgroundColor: 'rgb(65, 129, 246)', cursor: 'pointer', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}><SearchIcon style={{ color: 'white' }}></SearchIcon></InputGroup.Text>
                                         </InputGroup>

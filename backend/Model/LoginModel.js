@@ -5,6 +5,7 @@ const loginSchema = {
     email: String,
     password: String,
     profilePic:String,
+    bio:String,
 }
 
 const login = mongoose.model('Login', loginSchema)

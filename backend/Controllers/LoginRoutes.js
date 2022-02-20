@@ -20,7 +20,7 @@ export const getUsername = async (req, res) => {
 }
 
 export const signUp = async (req, res) => {
-    const { email, username, password,profilePic } = req.body
+    const { email, username, password,profilePic,bio } = req.body
     const errors = validationResult(req);
     console.log(errors)
     if (!errors.isEmpty()) {
@@ -42,7 +42,7 @@ export const signUp = async (req, res) => {
             else{
                 const passwordEncrypted = await bcrypt.hash(password, 12)
                 const loginDetails = await new LoginModel({
-                    email, username, password: passwordEncrypted,profilePic
+                    email, username, password: passwordEncrypted,profilePic,bio
                 })
     
                 loginDetails.save()

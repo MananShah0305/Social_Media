@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import './Login.css'
 import Particles from './ParticlesBackground.js';
 import Box from '@mui/material/Box';
@@ -31,10 +31,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ButtonBootstrap from 'react-bootstrap/Button'; //custom name given by me 
-import 'dropify/dist/css/dropify.css';
-import 'dropify/dist/js/dropify.js';
-import $ from 'jquery'
 import Tooltip from '@mui/material/Tooltip';
+import Cropper from 'react-easy-crop'
+import CropIcon from '@mui/icons-material/Crop';
+import { InputGroup, FormControl } from 'react-bootstrap';
+import getCroppedImg from './cropImage'
 
 let usernameLogin;
 
@@ -108,6 +109,42 @@ function Login(props) {
 
   const profilePicRef = useRef(null)
 
+  const [bio, setBio] = useState('')
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [zoom, setZoom] = useState(1)
+  const [aspect, setAspect] = useState(1)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
+
+  const [cropImage, setCropImage] = useState(false)
+
+  const onCropChange = (crop) => {
+    setCrop(crop)
+  }
+
+  const onCropComplete = useCallback((croppedArea,croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels)
+  }, [])
+
+  const onZoomChange = (zoom) => {
+    setZoom(zoom)
+  }
+
+  const showCroppedImage = useCallback(async () => {
+    setCropImage(false)
+    try {
+      const cImage = await getCroppedImg(
+        profilePic,
+        croppedAreaPixels,
+      )
+      console.log('donee', { cImage })
+      console.log(profilePic)
+      setProfilePic(cImage)
+    } catch (e) {
+      console.error(e)
+    }
+  }, [croppedAreaPixels])
+
   useEffect(() => {
     if (statusRegister == 'error') {
       const getAlert = () => <SweetAlert
@@ -137,14 +174,10 @@ function Login(props) {
         }>
         {message}<span>&#128512;</span>.
       </SweetAlert>
-      setAlert(getAlert()) 
+      setAlert(getAlert())
     }
 
   }, [statusRegister])
-
-  // useEffect(() => {
-
-  // }, [modalShow])
 
   useEffect(() => {
     if (statusLogin == 'error') {
@@ -193,28 +226,32 @@ function Login(props) {
   };
 
   const registerChange = (e) => {
-    const reader=new FileReader();
-    reader.onload=()=>{
-      if(reader.readyState==2){
-        setProfilePic(reader.result)  
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState == 2) {
+        setProfilePic(reader.result)
       }
     }
     reader.readAsDataURL(e.target.files[0])
   }
 
   const registerUser = () => {
+    setCropImage(false)
     const body = {
       email: formik.values.email,
       username: formik.values.username,
       password: formik.values.password,
       profilePic: profilePic,
+      bio:bio
     }
     axios.post('/signUp', body)
       .then((res) => {
+        console.log(body)
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusRegister(res.data.status)
         setModalShow(false)
+        window.reload()
       })
       .catch(err => {
         console.log(err);
@@ -289,8 +326,6 @@ function Login(props) {
     },
     validationSchema: validationSchema
   });
-
-  $('.dropify').dropify();
 
   return (
     <div className='login'>
@@ -430,30 +465,74 @@ function Login(props) {
                         Add Profile Picture
                       </Modal.Title>
                     </Modal.Header>
-                    <Modal.Body style={{ height: '240px' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                        <Tooltip title="Click to add a profile picture" placement="bottom">
-                          <Avatar style={{ cursor: 'pointer' }} onClick={() => profilePicRef.current.click()} sx={{ width: 160, height: 160 }} src={profilePic} >
-                            {profilePic == null && <PersonIcon sx={{ width: 120, height: 120 }} />}
-                          </Avatar>
-                        </Tooltip>
-                        <Form.Group className="position-relative mb-3">
-                          {/* <Form.Control
-                            type="file"
-                            name="profilePic"
-                            value={profilePic}
-                            onChange={registerChange}
-                          /> */}
-                          <input style={{ display: 'none' }} ref={profilePicRef} type="file" onChange={registerChange} />
-                        </Form.Group>
-                      </div>
+                    <Modal.Body style={{ height: '280px' }}>
+                      {
+                        !cropImage ?
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Tooltip title="Click to add a profile picture" placement="bottom">
+                                <Avatar style={{ cursor: 'pointer' }} onClick={() => profilePicRef.current.click()} sx={{ width: 160, height: 160 }} src={profilePic} >
+                                  {profilePic == null && <PersonIcon sx={{ width: 120, height: 120 }} />}
+                                </Avatar>
+                              </Tooltip>
+                              {
+                                profilePic != null && <Tooltip title="Crop Image" placement="right">
+                                  <CropIcon style={{ marginLeft: '10px', cursor: 'pointer' }} onClick={() => setCropImage(true)} />
+                                </Tooltip>
+                              }
+                            </div>
+                            <Form.Group className="position-relative mb-3">
+                              <input style={{ display: 'none' }} ref={profilePicRef} type="file" onChange={registerChange} />
+                            </Form.Group>
+                            <InputGroup className="mb-3" style={{ width: '70%' }}>
+                              <InputGroup.Text id="basic-addon1">Bio</InputGroup.Text>
+                              <FormControl
+                                placeholder="About Me..."
+                                aria-describedby="basic-addon1"
+                                onChange={(e)=>setBio(e.target.value)}
+                              />
+                            </InputGroup>
+                          </div>
+                          :
+                          <Cropper
+                            image={profilePic}
+                            crop={crop}
+                            zoom={zoom}
+                            aspect={aspect}
+                            cropShape="round"
+                            showGrid={false}
+                            onCropChange={onCropChange}
+                            onCropComplete={onCropComplete}
+                            onZoomChange={onZoomChange}
+                          />
+                      }
                     </Modal.Body>
-                    <Modal.Footer style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px' }}>
-                      <ButtonBootstrap onClick={registerUser} variant="success" style={{ width: '100px', color: 'white' }}>OK</ButtonBootstrap>
-                      <ButtonBootstrap variant="danger" style={{ width: '100px', color: 'white' }} onClick={() => setModalShow(false)}>Close</ButtonBootstrap>
+                    <Modal.Footer style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+                      {
+                        cropImage && (
+                          <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '20px', flex: '0.5' ,margin:'0px'}}>
+                            <ButtonBootstrap
+                              onClick={showCroppedImage}
+                              variant="contained"
+                              variant="success"
+                              style={{ width: '80px', color: 'white' ,marginRight:'10px'}}
+                            >Crop
+                            </ButtonBootstrap>
+                            <ButtonBootstrap
+                              variant="danger"
+                              style={{ width: '80px', color: 'white' }}
+                              onClick={()=>{setProfilePic(null);setCropImage(false)}}
+                            >Remove
+                            </ButtonBootstrap>
+                          </div>
+                        )
+                      }
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px', flex: '0.5',margin:'0px' }}>
+                        <ButtonBootstrap onClick={registerUser} variant="success" style={{ width: '80px', color: 'white',marginRight:'10px' }}>OK</ButtonBootstrap>
+                        <ButtonBootstrap variant="danger" style={{ width: '80px', color: 'white' }} onClick={() => setModalShow(false)}>Close</ButtonBootstrap>
+                      </div>
                     </Modal.Footer>
                   </Modal>
-
                 </Form>
               </TabPanel>
             </Box>
