@@ -209,11 +209,14 @@ function Login(props) {
     setStatusLogin("")
     console.log(value);
     if (value == 1) {
-      formik.values = initialRegister
+      formik.values.email = initialRegister.email
+      formik.values.password = initialRegister.password
+      formik.values.username = initialRegister.username
     }
     else {
       console.log(value);
     }
+
     setLogin(initialLogin)
   }
 
@@ -247,11 +250,11 @@ function Login(props) {
     axios.post('/signUp', body)
       .then((res) => {
         console.log(body)
+        setValue(0)
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusRegister(res.data.status)
         setModalShow(false)
-        window.reload()
       })
       .catch(err => {
         console.log(err);
@@ -293,7 +296,7 @@ function Login(props) {
 
   const validationSchema = yup.object({
     email: yup.string().required('Email is required').email('Invalid Email'),
-    username: yup.string().required('Username is required').min(6, 'Username must have atleast 6 characters').max(20, 'Username must have atmost 20 characters').matches(/^[a-zA-Z0-9_.]+$/, 'Username should only be composed of letters, numbers, underscore and period.'),
+    username: yup.string().required('Username is required').min(6, 'Username must have atleast 6 characters').max(16, 'Username must have atmost 16 characters').matches(/^[a-zA-Z0-9_.]+$/, 'Username should only be composed of letters, numbers, underscore and period.'),
     password: yup.string().required('Password is required').min(8, 'Password must have atleast 8 characters').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$/, 'Password should contain atleast one uppercase character, one lowercase character, one digit and one special character.')
   })
 
@@ -489,6 +492,7 @@ function Login(props) {
                               <FormControl
                                 placeholder="About Me..."
                                 aria-describedby="basic-addon1"
+                                value={bio}
                                 onChange={(e)=>setBio(e.target.value)}
                               />
                             </InputGroup>

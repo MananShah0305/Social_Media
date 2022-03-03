@@ -8,7 +8,7 @@ function Homepage(props) {
     let navigate = useNavigate();
 
     useEffect(() => {
-        if (sessionStorage?.getItem('isLoggedIn')==true) {
+        if (sessionStorage?.getItem('isLoggedIn')!=true) {
             console.log(sessionStorage?.getItem('isLoggedIn'))
             navigate('/login')
         }
