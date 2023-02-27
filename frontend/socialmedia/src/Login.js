@@ -36,6 +36,7 @@ import Cropper from 'react-easy-crop'
 import CropIcon from '@mui/icons-material/Crop';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import getCroppedImg from './cropImage'
+import { styled } from '@mui/material/styles';
 
 let usernameLogin;
 
@@ -76,6 +77,14 @@ const initialLogin = {
   password: ''
 }
 
+const Root = styled('div')(({ theme }) => ({
+  width: '100%',
+  ...theme.typography.body2,
+  '& > :not(style) + :not(style)': {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 function Login(props) {
 
   function a11yProps(index) {
@@ -103,7 +112,7 @@ function Login(props) {
 
   const [alert, setAlert] = useState(null)
 
-  const [modalShow, setModalShow] = useState(false);
+  const [profileModalShow, setProfileModalShow] = useState(false);
 
   const [profilePic, setProfilePic] = useState(null)
 
@@ -122,7 +131,7 @@ function Login(props) {
     setCrop(crop)
   }
 
-  const onCropComplete = useCallback((croppedArea,croppedAreaPixels) => {
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)
   }, [])
 
@@ -196,6 +205,7 @@ function Login(props) {
       setAlert(getAlert())
     }
     else if (statusLogin == 'success') {
+      setAlert(null)
       props.loginUser()
       navigate('/')
     }
@@ -245,7 +255,7 @@ function Login(props) {
       username: formik.values.username,
       password: formik.values.password,
       profilePic: profilePic,
-      bio:bio
+      bio: bio
     }
     axios.post('/signUp', body)
       .then((res) => {
@@ -254,44 +264,11 @@ function Login(props) {
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusRegister(res.data.status)
-        setModalShow(false)
+        setProfileModalShow(false)
       })
       .catch(err => {
         console.log(err);
       })
-  }
-
-  const loginChange = (e) => {
-    setLogin({
-      ...login,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  const loginSubmit = () => {
-    const body = {
-      username: login.username,
-      password: login.password
-    }
-    axios.post('/signIn', body)
-      .then((res) => {
-        usernameLogin = body.username
-        setAlertStatus(true)
-        setMessage(res.data.message)
-        setStatusLogin(res.data.status)
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }
-
-  const responseGoogleSuccess = (res) => {
-    usernameLogin = res.profileObj.givenName + ' ' + res.profileObj.familyName
-    props.loginUser()
-    navigate('/')
-  }
-  const responseGoogleFailure = (response) => {
-    console.log(response);
   }
 
   const validationSchema = yup.object({
@@ -311,7 +288,7 @@ function Login(props) {
         email: formik.values.email,
         username: formik.values.username,
         password: formik.values.password,
-        modalShow: true
+        profileModalShow: true
       }
       axios.post('/signUp', body)
         .then((res) => {
@@ -321,7 +298,7 @@ function Login(props) {
           }
           setMessage(res.data.message)
           setStatusRegister(res.data.status)
-          setModalShow(res.data.modal)
+          setProfileModalShow(res.data.modal)
         })
         .catch(err => {
           console.log(err);
@@ -329,6 +306,42 @@ function Login(props) {
     },
     validationSchema: validationSchema
   });
+
+
+  const loginChange = (e) => {
+    setLogin({
+      ...login,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const loginSubmit = () => {
+
+    const body = {
+      username: login.username,
+      password: login.password
+    }
+    axios.post('/signIn', body)
+      .then((res) => {
+        usernameLogin = body.username
+        setAlertStatus(true)
+        setMessage(res.data.message)
+        setStatusLogin(res.data.status)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  const responseGoogleSuccess = (res) => {
+    usernameLogin = res.profileObj.givenName + res.profileObj.familyName
+    console.log(usernameLogin)
+    props.loginUser()
+    navigate('/')
+  }
+  const responseGoogleFailure = (response) => {
+    console.log(response);
+  }
 
   return (
     <div className='login'>
@@ -379,11 +392,9 @@ function Login(props) {
                     Log In
                   </Button>
 
-                  <div style={{ display: 'flex' }}>
-                    <Divider></Divider>
-                    <p style={{ margin: '0px auto' }}>or login with</p>
-                    <Divider></Divider>
-                  </div>
+                  <Root>
+                    <Divider>or login with</Divider>   
+                  </Root>
 
                   <GoogleLogin
                     clientId={process.env.REACT_APP_CLIENT_ID}
@@ -458,7 +469,7 @@ function Login(props) {
                   </Button>
 
                   <Modal
-                    show={modalShow}
+                    show={profileModalShow}
                     size="md"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered
@@ -493,7 +504,7 @@ function Login(props) {
                                 placeholder="About Me..."
                                 aria-describedby="basic-addon1"
                                 value={bio}
-                                onChange={(e)=>setBio(e.target.value)}
+                                onChange={(e) => setBio(e.target.value)}
                               />
                             </InputGroup>
                           </div>
@@ -514,26 +525,26 @@ function Login(props) {
                     <Modal.Footer style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
                       {
                         cropImage && (
-                          <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '20px', flex: '0.5' ,margin:'0px'}}>
+                          <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '20px', flex: '0.5', margin: '0px' }}>
                             <ButtonBootstrap
                               onClick={showCroppedImage}
                               variant="contained"
                               variant="success"
-                              style={{ width: '80px', color: 'white' ,marginRight:'10px'}}
+                              style={{ width: '80px', color: 'white', marginRight: '10px' }}
                             >Crop
                             </ButtonBootstrap>
                             <ButtonBootstrap
                               variant="danger"
                               style={{ width: '80px', color: 'white' }}
-                              onClick={()=>{setProfilePic(null);setCropImage(false)}}
+                              onClick={() => { setProfilePic(null); setCropImage(false) }}
                             >Remove
                             </ButtonBootstrap>
                           </div>
                         )
                       }
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px', flex: '0.5',margin:'0px' }}>
-                        <ButtonBootstrap onClick={registerUser} variant="success" style={{ width: '80px', color: 'white',marginRight:'10px' }}>OK</ButtonBootstrap>
-                        <ButtonBootstrap variant="danger" style={{ width: '80px', color: 'white' }} onClick={() => setModalShow(false)}>Close</ButtonBootstrap>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px', flex: '0.5', margin: '0px' }}>
+                        <ButtonBootstrap onClick={registerUser} variant="success" style={{ width: '80px', color: 'white', marginRight: '10px' }}>OK</ButtonBootstrap>
+                        <ButtonBootstrap variant="danger" style={{ width: '80px', color: 'white' }} onClick={() => setProfileModalShow(false)}>Close</ButtonBootstrap>
                       </div>
                     </Modal.Footer>
                   </Modal>
