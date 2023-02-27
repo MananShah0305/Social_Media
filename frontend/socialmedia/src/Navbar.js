@@ -24,6 +24,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Tooltip from '@mui/material/Tooltip';
 import axios from './axios.js'
 import { connect } from 'react-redux'
+import { Link } from "react-router-dom";
 
 function Navbar(props) {
     const [state, setState] = useState({ right: false });
@@ -31,8 +32,8 @@ function Navbar(props) {
     useEffect(() => {
         axios.get('/username')
             .then(res => {
-                res.data.allUserInfo.map(user=>{
-                    if(props.username==user.username){
+                res.data.allUserInfo.map(user => {
+                    if (props.username == user.username) {
                         setUserInfo(user)
                     }
                     return;
@@ -114,10 +115,10 @@ function Navbar(props) {
 
     return (
         <>
-            <div class='navbar'>
+            <div className='navbar'>
                 <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', flex: '0.25' }}>
-                    <img src={userInfo.profilePic} alt="Profile Pic" width='50' height='50' style={{borderRadius:'40px'}}/>
-                    <h5 style={{ margin: '0px',marginLeft:'8px' }}>Welcome {userInfo.username} &#128516;</h5>
+                    <img src={userInfo.profilePic} alt="Profile Pic" width='50' height='50' style={{ borderRadius: '40px' }} />
+                    <h5 style={{ margin: '0px', marginLeft: '8px' }}>Welcome {userInfo.username} &#128516;</h5>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: '0.1' }}>
                     <img src="https://cdn.pixabay.com/photo/2022/01/26/23/18/instagram-6970242__340.jpg" alt="" height='50' width='50' />
@@ -125,19 +126,25 @@ function Navbar(props) {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: '0.22' }}>
                     <Tooltip title="Home" placement="bottom">
-                        <IconButton>
-                            <HomeOutlinedIcon style={{ fontSize: '30px', color: '#4181f6' }}></HomeOutlinedIcon>
-                        </IconButton>
+                        <Link to="/">
+                            <IconButton>
+                                <HomeOutlinedIcon style={{ fontSize: '30px', color: '#4181f6' }}></HomeOutlinedIcon>
+                            </IconButton>
+                        </Link>
                     </Tooltip>
                     <Tooltip title="Post" placement="bottom">
-                        <IconButton>
-                            <InsertPhotoOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></InsertPhotoOutlinedIcon>
-                        </IconButton>
+                        <Link to="/post">
+                            <IconButton>
+                                <InsertPhotoOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></InsertPhotoOutlinedIcon>
+                            </IconButton>
+                        </Link>
                     </Tooltip>
                     <Tooltip title="Chat" placement="bottom">
-                        <IconButton>
-                            <MapsUgcOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></MapsUgcOutlinedIcon>
-                        </IconButton>
+                        <Link to="/chatSection">
+                            <IconButton>
+                                <MapsUgcOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></MapsUgcOutlinedIcon>
+                            </IconButton>
+                        </Link>
                     </Tooltip>
                     {['right'].map((anchor) => (
                         <React.Fragment key={anchor}>
@@ -189,7 +196,7 @@ const mapStateToProps = (state) => {
     return {
         username: state.username,
     }
-  }
-  
-  export default connect(mapStateToProps)(Navbar)
+}
+
+export default connect(mapStateToProps)(Navbar)
 

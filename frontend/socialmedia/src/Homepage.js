@@ -2,15 +2,17 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux'
 import Navbar from './Navbar.js';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
 
 function Homepage(props) {
 
     let navigate = useNavigate();
 
     useEffect(() => {
-        if (sessionStorage?.getItem('isLoggedIn')!=true) {
+        if (sessionStorage?.getItem('isLoggedIn') != true) {
             console.log(sessionStorage?.getItem('isLoggedIn'))
-            navigate('/login')
+            // navigate('/login')
         }
         else {
             console.log(sessionStorage?.getItem('isLoggedIn'))
@@ -20,9 +22,9 @@ function Homepage(props) {
     return (
         <>
             <Navbar username={props.username}></Navbar>
-            <div style={{ backgroundColor: 'white', height: '100vh', fontWeight: 'bold', fontSize: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                
-            </div>
+            <Container style={{ backgroundColor: 'white', height: '100vh', fontWeight: 'bold', fontSize: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }} />
+            </Container>
         </>
     )
 }

@@ -54,8 +54,8 @@ export const chatPost = (req, res) => {
         .then(() => {
             console.log('Success')
             console.log(chats)
+            return res.status(200).json({ message: 'Chat sent', status: 'success' })
         })
         .catch(err => console.log(err))
 
-    return res.status(200).json({ message: 'Chat sent', status: 'success' })
 }

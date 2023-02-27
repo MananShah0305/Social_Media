@@ -1,5 +1,4 @@
 import express from 'express'
-import chatsModel from '../Model/ChatsModel.js'
 const router = express.Router()
 import {friendPost, chatPost,getChats} from '../Controllers/ChatRoutes.js'
 
