@@ -1,6 +1,6 @@
 import express from 'express'
 const router = express.Router()
-import {friendPost, chatPost,getChats} from '../Controllers/ChatRoutes.js'
+import {friendPost, chatPost,getChats} from '../Controllers/ChatController.js'
 
 router.route('/').get(getChats)
 

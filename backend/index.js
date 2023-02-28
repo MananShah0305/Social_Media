@@ -23,7 +23,6 @@ app.get('/', (req, res) => {
     res.send('hi')
 })
 
-
 const CONNECTION_URL = url
 mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
