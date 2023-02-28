@@ -1,15 +1,15 @@
 import mongoose from 'mongoose'
 
-const loginSchema = {
+const loginSchema = new mongoose.Schema({
     username: String,
     email: String,
     password: String,
     profilePic:String,
     bio:String,
-}
+},{collection:'login-data'})
 
-const login = mongoose.model('Login', loginSchema)
+const LoginModel = mongoose.model('Login', loginSchema)
 
 
 
-export default login
+export default LoginModel

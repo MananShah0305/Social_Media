@@ -40,7 +40,7 @@ import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 
-let usernameLogin,isGoogleLogin;
+let usernameLogin, isGoogleLogin;
 
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -290,17 +290,17 @@ function Login(props) {
         email: formik.values.email,
         username: formik.values.username,
         password: formik.values.password,
-        profileModalShow: true
       }
       axios.post('/signUp', body)
         .then((res) => {
-          console.log(res.data.modal)
-          if (res.data.status == 'error') {
-            setAlertStatus(true)
-          }
+          // if (res.data.status == 'error') {
+          setAlertStatus(true)
+          // }
           setMessage(res.data.message)
           setStatusRegister(res.data.status)
-          setProfileModalShow(res.data.modal)
+          if (res.data.status == 'success') {
+            setProfileModalShow(true)
+          }
         })
         .catch(err => {
           console.log(err);
@@ -308,7 +308,6 @@ function Login(props) {
     },
     validationSchema: validationSchema
   });
-
 
   const loginChange = (e) => {
     setLogin({
@@ -337,7 +336,7 @@ function Login(props) {
 
   const responseGoogleSuccess = (res) => {
     usernameLogin = res.profileObj.givenName + res.profileObj.familyName
-    isGoogleLogin=true
+    isGoogleLogin = true
     console.log(usernameLogin)
     props.loginUser()
     navigate('/')
@@ -347,219 +346,219 @@ function Login(props) {
   }
 
   return (
-    <div className='login' style={{ height:'100vh', background:`URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover`}}>
+    <div className='login' style={{ height: '100vh', background: `URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover` }}>
       {
         alertStatus && alert
       }
       {/* <Particles></Particles> */}
-        <Container maxWidth="sm" style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh' }}>
-          <TabContext value={value}>
-            <Paper elevation={12} sx={{ borderRadius: '20px', bgcolor: '#FFFFFF', height: '62vh', width: '100%' }}>
-              <Tabs centered value={Number(value)} onChange={changeTabs} aria-label="basic tabs example">
-                <Tab icon={<LoginIcon />} iconPosition="end" label="Login" {...a11yProps(0)} />
-                <Tab icon={<AppRegistrationRoundedIcon />} iconPosition="end" label="Register" {...a11yProps(1)} />
-              </Tabs>
-              <TabPanel value={Number(value)} index={0} style={{ padding: '0px' }}>
-                <form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }} variant='outlined'>
+      <Container maxWidth="sm" style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh' }}>
+        <TabContext value={value}>
+          <Paper elevation={12} sx={{ borderRadius: '20px', bgcolor: '#FFFFFF', height: '62vh', width: '100%' }}>
+            <Tabs centered value={Number(value)} onChange={changeTabs} aria-label="basic tabs example">
+              <Tab icon={<LoginIcon />} iconPosition="end" label="Login" {...a11yProps(0)} />
+              <Tab icon={<AppRegistrationRoundedIcon />} iconPosition="end" label="Register" {...a11yProps(1)} />
+            </Tabs>
+            <TabPanel value={Number(value)} index={0} style={{ padding: '0px' }}>
+              <form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }} variant='outlined'>
 
-                  <TextField
-                    name='username'
-                    value={login.username}
-                    onChange={loginChange}
-                    label="Username"
-                    variant="outlined"
-                    fullWidth />
+                <TextField
+                  name='username'
+                  value={login.username}
+                  onChange={loginChange}
+                  label="Username"
+                  variant="outlined"
+                  fullWidth />
 
-                  <TextField
-                    name='password'
-                    type={showPassword ? 'text' : 'password'}
-                    value={login.password}
-                    onChange={loginChange}
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position='end'>
-                          <IconButton
-                            aria-label='toggle password visibility'
-                            onClick={handlePasswordVisibility}>
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }} />
+                <TextField
+                  name='password'
+                  type={showPassword ? 'text' : 'password'}
+                  value={login.password}
+                  onChange={loginChange}
+                  label="Password"
+                  variant="outlined"
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton
+                          aria-label='toggle password visibility'
+                          onClick={handlePasswordVisibility}>
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }} />
 
-                  <Button type='submit' style={{ padding: '10px' }} onClick={loginSubmit} variant="contained" endIcon={<LoginIcon />} fullWidth>
-                    Log In
-                  </Button>
+                <Button type='submit' style={{ padding: '10px' }} onClick={loginSubmit} variant="contained" endIcon={<LoginIcon />} fullWidth>
+                  Log In
+                </Button>
 
-                  <Root>
-                    <Divider>or login with</Divider>   
-                  </Root>
+                <Root>
+                  <Divider>or login with</Divider>
+                </Root>
 
-                  <GoogleLogin
-                    clientId={process.env.REACT_APP_CLIENT_ID}
-                    render={(renderProps) => (
-                      <GoogleButton style={{ width: '100%' }}
-                        onClick={renderProps.onClick}
-                      />
-                    )}
-                    buttonText="Sign In with Google"
-                    onSuccess={responseGoogleSuccess}
-                    onFailure={responseGoogleFailure}
-                    cookiePolicy={"single_host_origin"}
-                  />
+                <GoogleLogin
+                  clientId={process.env.REACT_APP_CLIENT_ID}
+                  render={(renderProps) => (
+                    <GoogleButton style={{ width: '100%' }}
+                      onClick={renderProps.onClick}
+                    />
+                  )}
+                  buttonText="Sign In with Google"
+                  onSuccess={responseGoogleSuccess}
+                  onFailure={responseGoogleFailure}
+                  cookiePolicy={"single_host_origin"}
+                />
 
-                  <p style={{ margin: '0px' }}>Don't have an account? <Chip label="Register Now" color="primary" variant="outlined" size="medium" onClick={() => setValue(1)}/></p>
+                <p style={{ margin: '0px' }}>Don't have an account? <Chip label="Register Now" color="primary" variant="outlined" size="medium" onClick={() => setValue(1)} /></p>
 
-                </form>
-              </TabPanel>
+              </form>
+            </TabPanel>
 
-              <TabPanel value={Number(value)} index={1} style={{ padding: '0px' }}>
-                <Form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
+            <TabPanel value={Number(value)} index={1} style={{ padding: '0px' }}>
+              <Form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
 
-                  <TextField
-                    name='email'
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    label="Email Id"
-                    variant="outlined"
-                    fullWidth
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                    onBlur={formik.handleBlur}
-                  />
+                <TextField
+                  name='email'
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  label="Email Id"
+                  variant="outlined"
+                  fullWidth
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
+                  onBlur={formik.handleBlur}
+                />
 
-                  <TextField
-                    name='username'
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    label="Username"
-                    variant="outlined"
-                    fullWidth
-                    error={formik.touched.username && Boolean(formik.errors.username)}
-                    helperText={formik.touched.username && formik.errors.username}
-                    onBlur={formik.handleBlur} />
+                <TextField
+                  name='username'
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
+                  label="Username"
+                  variant="outlined"
+                  fullWidth
+                  error={formik.touched.username && Boolean(formik.errors.username)}
+                  helperText={formik.touched.username && formik.errors.username}
+                  onBlur={formik.handleBlur} />
 
-                  <TextField
-                    type={showPassword ? 'text' : 'password'}
-                    name='password'
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
-                    onBlur={formik.handleBlur}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position='end'>
-                          <IconButton
-                            aria-label='toggle password visibility'
-                            onClick={handlePasswordVisibility}>
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
+                <TextField
+                  type={showPassword ? 'text' : 'password'}
+                  name='password'
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  label="Password"
+                  variant="outlined"
+                  fullWidth
+                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  helperText={formik.touched.password && formik.errors.password}
+                  onBlur={formik.handleBlur}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton
+                          aria-label='toggle password visibility'
+                          onClick={handlePasswordVisibility}>
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
-                  <Button type='submit' style={{ padding: '10px' }} variant="contained" endIcon={<AppRegistrationRoundedIcon />} fullWidth>
-                    Register
-                  </Button>
+                <Button type='submit' style={{ padding: '10px' }} variant="contained" endIcon={<AppRegistrationRoundedIcon />} fullWidth>
+                  Register
+                </Button>
 
-                  <Modal
-                    show={profileModalShow}
-                    size="md"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    centered
-                  >
-                    <Modal.Header >
-                      <Modal.Title id="contained-modal-title-vcenter" style={{ color: '#4181f6' }}>
-                        Add Profile Picture
-                      </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body style={{ height: '280px' }}>
-                      {
-                        !cropImage ?
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <Tooltip title="Click to add a profile picture" placement="bottom">
-                                <Avatar style={{ cursor: 'pointer' }} onClick={() => profilePicRef.current.click()} sx={{ width: 160, height: 160 }} src={profilePic} >
-                                  {profilePic == null && <PersonIcon sx={{ width: 120, height: 120 }} />}
-                                </Avatar>
+                <Modal
+                  show={profileModalShow}
+                  size="md"
+                  aria-labelledby="contained-modal-title-vcenter"
+                  centered
+                >
+                  <Modal.Header >
+                    <Modal.Title id="contained-modal-title-vcenter" style={{ color: '#4181f6' }}>
+                      Add Profile Picture
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body style={{ height: '280px' }}>
+                    {
+                      !cropImage ?
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Tooltip title="Click to add a profile picture" placement="bottom">
+                              <Avatar style={{ cursor: 'pointer' }} onClick={() => profilePicRef.current.click()} sx={{ width: 160, height: 160 }} src={profilePic} >
+                                {profilePic == null && <PersonIcon sx={{ width: 120, height: 120 }} />}
+                              </Avatar>
+                            </Tooltip>
+                            {
+                              profilePic != null && <Tooltip title="Crop Image" placement="right">
+                                <CropIcon style={{ marginLeft: '10px', cursor: 'pointer' }} onClick={() => setCropImage(true)} />
                               </Tooltip>
-                              {
-                                profilePic != null && <Tooltip title="Crop Image" placement="right">
-                                  <CropIcon style={{ marginLeft: '10px', cursor: 'pointer' }} onClick={() => setCropImage(true)} />
-                                </Tooltip>
-                              }
-                            </div>
-                            <Form.Group className="position-relative mb-3">
-                              <input style={{ display: 'none' }} ref={profilePicRef} type="file" onChange={registerChange} />
-                            </Form.Group>
-                            <InputGroup className="mb-3" style={{ width: '70%' }}>
-                              <InputGroup.Text id="basic-addon1">Bio</InputGroup.Text>
-                              <FormControl
-                                placeholder="About Me..."
-                                aria-describedby="basic-addon1"
-                                value={bio}
-                                onChange={(e) => setBio(e.target.value)}
-                              />
-                            </InputGroup>
+                            }
                           </div>
-                          :
-                          <Cropper
-                            image={profilePic}
-                            crop={crop}
-                            zoom={zoom}
-                            aspect={aspect}
-                            cropShape="round"
-                            showGrid={false}
-                            onCropChange={onCropChange}
-                            onCropComplete={onCropComplete}
-                            onZoomChange={onZoomChange}
-                          />
-                      }
-                    </Modal.Body>
-                    <Modal.Footer style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
-                      {
-                        cropImage && (
-                          <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '20px', flex: '0.5', margin: '0px' }}>
-                            <ButtonBootstrap
-                              onClick={showCroppedImage}
-                              variant="contained"
-                              variant="success"
-                              style={{ width: '80px', color: 'white', marginRight: '10px' }}
-                            >Crop
-                            </ButtonBootstrap>
-                            <ButtonBootstrap
-                              variant="danger"
-                              style={{ width: '80px', color: 'white' }}
-                              onClick={() => { setProfilePic(null); setCropImage(false) }}
-                            >Remove
-                            </ButtonBootstrap>
-                          </div>
-                        )
-                      }
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px', flex: '0.5', margin: '0px' }}>
-                        <ButtonBootstrap onClick={registerUser} variant="success" style={{ width: '80px', color: 'white', marginRight: '10px' }}>OK</ButtonBootstrap>
-                        <ButtonBootstrap variant="danger" style={{ width: '80px', color: 'white' }} onClick={() => setProfileModalShow(false)}>Close</ButtonBootstrap>
-                      </div>
-                    </Modal.Footer>
-                  </Modal>
-                </Form>
-              </TabPanel>
-            </Paper>
-          </TabContext>
-        </Container>
+                          <Form.Group className="position-relative mb-3">
+                            <input style={{ display: 'none' }} ref={profilePicRef} type="file" onChange={registerChange} />
+                          </Form.Group>
+                          <InputGroup className="mb-3" style={{ width: '70%' }}>
+                            <InputGroup.Text id="basic-addon1">Bio</InputGroup.Text>
+                            <FormControl
+                              placeholder="About Me..."
+                              aria-describedby="basic-addon1"
+                              value={bio}
+                              onChange={(e) => setBio(e.target.value)}
+                            />
+                          </InputGroup>
+                        </div>
+                        :
+                        <Cropper
+                          image={profilePic}
+                          crop={crop}
+                          zoom={zoom}
+                          aspect={aspect}
+                          cropShape="round"
+                          showGrid={false}
+                          onCropChange={onCropChange}
+                          onCropComplete={onCropComplete}
+                          onZoomChange={onZoomChange}
+                        />
+                    }
+                  </Modal.Body>
+                  <Modal.Footer style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}>
+                    {
+                      cropImage && (
+                        <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '20px', flex: '0.5', margin: '0px' }}>
+                          <ButtonBootstrap
+                            onClick={showCroppedImage}
+                            variant="contained"
+                            variant="success"
+                            style={{ width: '80px', color: 'white', marginRight: '10px' }}
+                          >Crop
+                          </ButtonBootstrap>
+                          <ButtonBootstrap
+                            variant="danger"
+                            style={{ width: '80px', color: 'white' }}
+                            onClick={() => { setProfilePic(null); setCropImage(false) }}
+                          >Remove
+                          </ButtonBootstrap>
+                        </div>
+                      )
+                    }
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px', flex: '0.5', margin: '0px' }}>
+                      <ButtonBootstrap onClick={registerUser} variant="success" style={{ width: '80px', color: 'white', marginRight: '10px' }}>OK</ButtonBootstrap>
+                      <ButtonBootstrap variant="danger" style={{ width: '80px', color: 'white' }} onClick={() => setProfileModalShow(false)}>Close</ButtonBootstrap>
+                    </div>
+                  </Modal.Footer>
+                </Modal>
+              </Form>
+            </TabPanel>
+          </Paper>
+        </TabContext>
+      </Container>
     </div>
   )
 }
 
-export { usernameLogin,isGoogleLogin }
+export { usernameLogin, isGoogleLogin }
 
 const mapDispatchToProps = (dispatch) => {
   return {

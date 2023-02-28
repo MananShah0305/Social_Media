@@ -30,16 +30,12 @@ export const signUp = async (req, res) => {
         const existingEmail = await LoginModel.findOne({ email })
         const existingUsername = await LoginModel.findOne({ username })
         if (existingEmail) {
-            return res.status(200).json({ message: 'Email is already registered', status: 'error' })
+            return res.status(200).json({ message: 'This email is already registered', status: 'error' })
         }
         else if (existingUsername) {
-            return res.status(200).json({ message: 'Username already exists', status: 'error' })
+            return res.status(200).json({ message: 'A user with this username already exists', status: 'error' })
         }
         else {
-            if(req.body.modalShow==true){
-                res.status(200).json({modal:true})
-            }
-            else{
                 const passwordEncrypted = await bcrypt.hash(password, 12)
                 const loginDetails = await new LoginModel({
                     email, username, password: passwordEncrypted,profilePic,bio
@@ -47,7 +43,6 @@ export const signUp = async (req, res) => {
     
                 loginDetails.save()
                 return res.status(200).json({ message: 'You are registered successfully', status: 'success' })
-            }
         }
     }
 }
@@ -65,7 +60,9 @@ export const signIn = async (req, res) => {
         return res.status(200).json({ message: 'Invalid credentials', status: 'error' })
     }
     else {
-        return res.status(200).json({ message: 'User Logged In successfully', status: 'success' })
+        const userInfo={name:username}
+        const accessToken=jwt.sign(userInfo,process.env.ACCESS_SECRET_KEY)
+        return res.status(200).json({ accessToken:accessToken })
     }
 }
 
