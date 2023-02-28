@@ -37,8 +37,10 @@ import CropIcon from '@mui/icons-material/Crop';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import getCroppedImg from './cropImage'
 import { styled } from '@mui/material/styles';
+import Chip from '@mui/material/Chip';
+import Paper from '@mui/material/Paper';
 
-let usernameLogin;
+let usernameLogin,isGoogleLogin;
 
 export function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -335,6 +337,7 @@ function Login(props) {
 
   const responseGoogleSuccess = (res) => {
     usernameLogin = res.profileObj.givenName + res.profileObj.familyName
+    isGoogleLogin=true
     console.log(usernameLogin)
     props.loginUser()
     navigate('/')
@@ -344,15 +347,14 @@ function Login(props) {
   }
 
   return (
-    <div className='login'>
+    <div className='login' style={{ height:'100vh', background:`URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover`}}>
       {
         alertStatus && alert
       }
       {/* <Particles></Particles> */}
-      <div style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh', left: '37vw' }}>
-        <Container maxWidth="sm">
+        <Container maxWidth="sm" style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh' }}>
           <TabContext value={value}>
-            <Box sx={{ borderRadius: '20px', border: '4px solid #1d8be4', bgcolor: '#FFFFFF', height: '62vh', width: '100%' }}>
+            <Paper elevation={12} sx={{ borderRadius: '20px', bgcolor: '#FFFFFF', height: '62vh', width: '100%' }}>
               <Tabs centered value={Number(value)} onChange={changeTabs} aria-label="basic tabs example">
                 <Tab icon={<LoginIcon />} iconPosition="end" label="Login" {...a11yProps(0)} />
                 <Tab icon={<AppRegistrationRoundedIcon />} iconPosition="end" label="Register" {...a11yProps(1)} />
@@ -409,7 +411,7 @@ function Login(props) {
                     cookiePolicy={"single_host_origin"}
                   />
 
-                  <p style={{ margin: '0px' }}>Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold', color: '#0089ff' }} onClick={() => setValue(1)}>Register Now</span></p>
+                  <p style={{ margin: '0px' }}>Don't have an account? <Chip label="Register Now" color="primary" variant="outlined" size="medium" onClick={() => setValue(1)}/></p>
 
                 </form>
               </TabPanel>
@@ -550,15 +552,14 @@ function Login(props) {
                   </Modal>
                 </Form>
               </TabPanel>
-            </Box>
+            </Paper>
           </TabContext>
         </Container>
-      </div>
     </div>
   )
 }
 
-export { usernameLogin }
+export { usernameLogin,isGoogleLogin }
 
 const mapDispatchToProps = (dispatch) => {
   return {

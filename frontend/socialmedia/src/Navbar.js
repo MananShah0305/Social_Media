@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import './Navbar.css'
+
 import IconButton from '@mui/material/IconButton';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
 import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -24,11 +27,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Tooltip from '@mui/material/Tooltip';
 import axios from './axios.js'
 import { connect } from 'react-redux'
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
+import { logoutUser } from './LoginRedux/loginActions.js'
 
 function Navbar(props) {
+
+    let navigate = useNavigate();
     const [state, setState] = useState({ right: false });
     const [userInfo, setUserInfo] = useState({})
+
     useEffect(() => {
         axios.get('/username')
             .then(res => {
@@ -113,6 +120,11 @@ function Navbar(props) {
         setState({ right: false })
     };
 
+    const logoutSite=()=>{
+        props.logoutUser()
+        navigate('/login')
+    }
+
     return (
         <>
             <div className='navbar'>
@@ -131,17 +143,24 @@ function Navbar(props) {
                             </IconButton>
                         </Link>
                     </Tooltip>
-                    <Tooltip title="Post" placement="bottom">
+                    <Tooltip title="New Post" placement="bottom">
                         <Link to="/post">
                             <IconButton>
                                 <InsertPhotoOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></InsertPhotoOutlinedIcon>
                             </IconButton>
                         </Link>
                     </Tooltip>
-                    <Tooltip title="Chat" placement="bottom">
+                    <Tooltip title="Chats" placement="bottom">
                         <Link to="/chatSection">
                             <IconButton>
                                 <MapsUgcOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></MapsUgcOutlinedIcon>
+                            </IconButton>
+                        </Link>
+                    </Tooltip>
+                    <Tooltip title="Logout" placement="bottom">
+                        <Link to="/login">
+                            <IconButton>
+                                <LogoutIcon style={{ fontSize: '26px', color: '#4181f6' }} onClick={logoutSite}></LogoutIcon>
                             </IconButton>
                         </Link>
                     </Tooltip>
@@ -197,5 +216,11 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Navbar)
+const mapDispatchToProps = (dispatch) => {
+    return {
+      logoutUser: () => dispatch(logoutUser())
+    }
+  }
+
+export default connect(mapStateToProps,mapDispatchToProps)(Navbar)
 
