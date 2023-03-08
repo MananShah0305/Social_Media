@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux'
-import Navbar from './Navbar.js';
+import Navbar from './Navbar.jsx';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import './Navbar.css'
+import '../Styles/Navbar.css'
 
 import IconButton from '@mui/material/IconButton';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -25,10 +25,10 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Tooltip from '@mui/material/Tooltip';
-import axios from './axios.js'
+import axios from '../axios.js'
 import { connect } from 'react-redux'
 import { Link, useNavigate  } from "react-router-dom";
-import { logoutUser } from './LoginRedux/loginActions.js'
+import { logoutUser } from '../LoginRedux/loginActions.js'
 
 function Navbar(props) {
 

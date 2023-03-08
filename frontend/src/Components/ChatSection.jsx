@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Navbar from './Navbar.js';
+import Navbar from './Navbar.jsx';
 
 function ChatSection(props) {
     return (

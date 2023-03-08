@@ -1,6 +1,6 @@
 import React from 'react'
 import Particles from "react-tsparticles";
-import './Login.css'
+import '../Styles/Login.css'
 
 function ParticlesBackground() {
 

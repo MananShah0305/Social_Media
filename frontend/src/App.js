@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
-import Login from './Login.js'
-import Homepage from './Homepage.js'
-import Post from './Post'
-import ChatSection from './ChatSection'
+import Login from './Components/Login.jsx'
+import Homepage from './Components/Homepage.jsx'
+import Post from './Components/Post.jsx'
+import ChatSection from './Components/ChatSection.jsx'
 import { Provider } from 'react-redux'
 import store from './LoginRedux/Store.js'
 

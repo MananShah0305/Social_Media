@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import './Login.css'
-import Particles from './ParticlesBackground.js';
+import '../Styles/Login.css'
+import Particles from './ParticlesBackground.jsx';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Tab from '@mui/material/Tab';
@@ -19,12 +19,12 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import SweetAlert from 'react-bootstrap-sweetalert'
-import axios from './axios'
+import axios from '../axios.js'
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import Divider from '@mui/material/Divider';
-import { loginUser } from './LoginRedux/loginActions.js'
+import { loginUser } from '../LoginRedux/loginActions.js'
 import { connect } from 'react-redux'
 import { Modal, Form } from 'react-bootstrap'
 import PersonIcon from '@mui/icons-material/Person';
