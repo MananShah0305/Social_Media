@@ -1,5 +1,5 @@
 import express from 'express'
-import { getCredentials,getUsername, signUp,signIn } from '../Controllers/LoginController.js'
+import { getCredentials,getUsername, signUp,signIn,emailVerify } from '../Controllers/LoginController.js'
 import validator from 'express-validator';
 const { check } = validator;
 
@@ -17,5 +17,7 @@ router.route('/signUp').post(
     ], signUp)
 
 router.route('/signIn').post(signIn)
+
+router.route('/email-verify').post(emailVerify)
 
 export default router

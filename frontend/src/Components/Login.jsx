@@ -35,10 +35,11 @@ import Tooltip from '@mui/material/Tooltip';
 import Cropper from 'react-easy-crop'
 import CropIcon from '@mui/icons-material/Crop';
 import { InputGroup, FormControl } from 'react-bootstrap';
-import getCroppedImg from './cropImage'
+import getCroppedImg from '../cropImage'
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 
 let usernameLogin, isGoogleLogin;
 
@@ -345,55 +346,60 @@ function Login(props) {
     console.log(response);
   }
 
+  const forgotPassword=()=>{
+    navigate('/forgot-password')
+  }
+
   return (
     <div className='login' style={{ height: '100vh', background: `URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover` }}>
       {
         alertStatus && alert
       }
       {/* <Particles></Particles> */}
-      <Container maxWidth="sm" style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh' }}>
+      <Container maxWidth="sm" style={{ height: '56vh', width: '24vw', position: 'relative', top: '19vh' }}>
         <TabContext value={value}>
-          <Paper elevation={12} sx={{ borderRadius: '20px', bgcolor: '#FFFFFF', height: '62vh', width: '100%' }}>
+          <Paper elevation={12} sx={{ borderRadius: '20px', bgcolor: '#FFFFFF', height: '56vh', width: '100%' }}>
             <Tabs centered value={Number(value)} onChange={changeTabs} aria-label="basic tabs example">
               <Tab icon={<LoginIcon />} iconPosition="end" label="Login" {...a11yProps(0)} />
               <Tab icon={<AppRegistrationRoundedIcon />} iconPosition="end" label="Register" {...a11yProps(1)} />
             </Tabs>
             <TabPanel value={Number(value)} index={0} style={{ padding: '0px' }}>
-              <form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }} variant='outlined'>
+              <Stack spacing={1}>
+                <form onSubmit={formik.handleSubmit} style={{ height: '26vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }} variant='outlined'>
 
-                <TextField
-                  name='username'
-                  value={login.username}
-                  onChange={loginChange}
-                  label="Username"
-                  variant="outlined"
-                  fullWidth />
+                  <TextField
+                    name='username'
+                    value={login.username}
+                    onChange={loginChange}
+                    label="Username"
+                    variant="outlined"
+                    fullWidth />
 
-                <TextField
-                  name='password'
-                  type={showPassword ? 'text' : 'password'}
-                  value={login.password}
-                  onChange={loginChange}
-                  label="Password"
-                  variant="outlined"
-                  fullWidth
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton
-                          aria-label='toggle password visibility'
-                          onClick={handlePasswordVisibility}>
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }} />
+                  <TextField
+                    name='password'
+                    type={showPassword ? 'text' : 'password'}
+                    value={login.password}
+                    onChange={loginChange}
+                    label="Password"
+                    variant="outlined"
+                    fullWidth
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton
+                            aria-label='toggle password visibility'
+                            onClick={handlePasswordVisibility}>
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }} />
 
-                <Button type='submit' style={{ padding: '10px' }} onClick={loginSubmit} variant="contained" endIcon={<LoginIcon />} fullWidth>
-                  Log In
-                </Button>
+                  <Button type='submit' style={{ padding: '10px' }} onClick={loginSubmit} variant="contained" endIcon={<LoginIcon />} fullWidth>
+                    Log In
+                  </Button>
 
-                <Root>
+                  {/* <Root>
                   <Divider>or login with</Divider>
                 </Root>
 
@@ -408,15 +414,16 @@ function Login(props) {
                   onSuccess={responseGoogleSuccess}
                   onFailure={responseGoogleFailure}
                   cookiePolicy={"single_host_origin"}
-                />
+                /> */}
 
-                <p style={{ margin: '0px' }}>Don't have an account? <Chip label="Register Now" color="primary" variant="outlined" size="medium" onClick={() => setValue(1)} /></p>
-
-              </form>
+                </form>
+                <p style={{fontSize:'14px' }}>Forgot password?<Button size='small' onClick={forgotPassword}>Click to reset</Button></p>
+                {/* <p style={{ margin: '0px' }}>No account yet? <Chip label="Register Now" color="primary" variant="outlined" size="medium" onClick={() => setValue(1)} /></p> */}
+              </Stack>
             </TabPanel>
 
             <TabPanel value={Number(value)} index={1} style={{ padding: '0px' }}>
-              <Form onSubmit={formik.handleSubmit} style={{ height: '44vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
+              <Form onSubmit={formik.handleSubmit} style={{ height: '38vh', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
 
                 <TextField
                   name='email'

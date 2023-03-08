@@ -66,3 +66,16 @@ export const signIn = async (req, res) => {
     }
 }
 
+export const emailVerify = async (req, res) => {
+    const { email } = req.body
+
+    const existingEmail = await LoginModel.findOne({ email })
+    if (!existingEmail) {
+        return res.status(200).json({ message: 'This email is not registered', status: 'error' })
+    }
+
+    else {
+        return res.status(200).json({ message: 'Email is successfully verified',status:'success' })
+    }
+}
+
