@@ -6,6 +6,7 @@ import loginRouter from './Routes/LoginRoutes.js'
 import chatRouter from './Routes/ChatRoutes.js'
 import multer from 'multer'
 import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
@@ -15,9 +16,11 @@ const upload = multer({})
 app.use(express.json({extended:true,limit:'2mb'}))
 app.use(express.urlencoded({extended:true,limit:'2mb'}))
 app.use(cors())
+app.use(cookieParser())
 
 const port = process.env.PORT;
 const url=process.env.CONNECTION_URL
+export const secret_key=process.env.JWT_SECRET_KEY
 
 app.get('/', (req, res) => {
     res.send('hi')

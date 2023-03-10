@@ -121,7 +121,7 @@ function Login(props) {
 
   const profilePicRef = useRef(null)
 
-  const [bio, setBio] = useState('')
+  const [bio, setBio] = useState('I am a meetup user!')
 
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
@@ -268,6 +268,8 @@ function Login(props) {
         setMessage(res.data.message)
         setStatusRegister(res.data.status)
         setProfileModalShow(false)
+        setProfilePic('')
+        setBio('')
       })
       .catch(err => {
         console.log(err);
@@ -287,20 +289,30 @@ function Login(props) {
       password: '',
     },
     onSubmit: () => {
-      const body = {
-        email: formik.values.email,
-        username: formik.values.username,
-        password: formik.values.password,
-      }
-      axios.post('/signUp', body)
-        .then((res) => {
-          // if (res.data.status == 'error') {
-          setAlertStatus(true)
-          // }
-          setMessage(res.data.message)
-          setStatusRegister(res.data.status)
-          if (res.data.status == 'success') {
+      axios.get('/loginCredentials')
+        .then(res => {
+          if (res.data.credentials.length == 0) {
+            console.log('success')
             setProfileModalShow(true)
+          }
+          else {
+            res.data.credentials?.map(cred => {
+              if (cred.email == formik.values.email) {
+                setAlertStatus(true)
+                setMessage('This email is already registered')
+                setStatusRegister('error')
+              }
+              else if (cred.username == formik.values.username) {
+                setAlertStatus(true)
+                setMessage('A user with this username already exists')
+                setStatusRegister('error')
+              }
+              else {
+                console.log('success')
+                setProfileModalShow(true)
+                return;
+              }
+            })
           }
         })
         .catch(err => {
@@ -346,17 +358,17 @@ function Login(props) {
     console.log(response);
   }
 
-  const forgotPassword=()=>{
+  const forgotPassword = () => {
     navigate('/forgot-password')
   }
 
   return (
-    <div className='login' style={{ height: '100vh', background: `URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover` }}>
+    <div className='login' style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: `URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover` }}>
       {
         alertStatus && alert
       }
       {/* <Particles></Particles> */}
-      <Container maxWidth="sm" style={{ height: '56vh', width: '24vw', position: 'relative', top: '19vh' }}>
+      <Container maxWidth="sm" style={{ height: '56vh', width: '24vw', }}>
         <TabContext value={value}>
           <Paper elevation={12} sx={{ borderRadius: '20px', bgcolor: '#FFFFFF', height: '56vh', width: '100%' }}>
             <Tabs centered value={Number(value)} onChange={changeTabs} aria-label="basic tabs example">
@@ -417,7 +429,7 @@ function Login(props) {
                 /> */}
 
                 </form>
-                <p style={{fontSize:'14px' }}>Forgot password?<Button size='small' onClick={forgotPassword}>Click to reset</Button></p>
+                <p style={{ fontSize: '14px' }}>Forgot password?<Button size='small' onClick={forgotPassword}>Click to reset</Button></p>
                 {/* <p style={{ margin: '0px' }}>No account yet? <Chip label="Register Now" color="primary" variant="outlined" size="medium" onClick={() => setValue(1)} /></p> */}
               </Stack>
             </TabPanel>

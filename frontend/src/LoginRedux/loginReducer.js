@@ -1,6 +1,6 @@
 import { LOGIN_USER } from './loginTypes.js'
 import { LOGOUT_USER } from './loginTypes.js'
-import { usernameLogin,isGoogleLogin } from '../Components/Login.jsx'
+import { usernameLogin,isGoogleLogin } from '../Components/Authentication.jsx'
 
 const initialState = {
     username: '',

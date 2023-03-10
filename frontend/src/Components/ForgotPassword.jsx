@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 
-import LoginIcon from '@mui/icons-material/Login';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SweetAlert from 'react-bootstrap-sweetalert'
@@ -13,21 +12,22 @@ import { connect } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Paper from '@mui/material/Paper';
 
-function Login(props) {
+function ForgotPassword(props) {
 
     let navigate = useNavigate();
 
-    const [code, setCode] = useState(false)
+    // const [otp, setOtp] = useState(false)
 
-    const [codeValue, setCodeValue] = useState('')
+    // const [otpValue, setOtpValue] = useState('')
 
     const [email, setEmail] = useState('')
 
     const [alertStatus, setAlertStatus] = useState(false)
 
-    const [message, setMessage] = useState('')
+    const [message1, setMessage1] = useState('')
+    const [message2, setMessage2] = useState('')
 
-    const [statusEmail, setstatusEmail] = useState('')
+    const [statusEmail, setStatusEmail] = useState('')
 
     const [alert, setAlert] = useState(null)
 
@@ -42,45 +42,58 @@ function Login(props) {
                         <Button variant="contained" onClick={onConfirm}>OK</Button>
                     </>
                 }>
-                {message}<span>&#128545;</span>.
+                {message1} <b>{message2}<span>&#128545;</span></b>
             </SweetAlert>
-
             setAlert(getAlert())
         }
         else if (statusEmail == 'success') {
-            getCode()
+            // getOtp()
+            const getAlert = () => <SweetAlert
+                success
+                title="Success!"
+                onConfirm={onConfirm}
+                customButtons={
+                    <>
+                        <Button variant="contained" onClick={onConfirm}>OK</Button>
+                    </>
+                }>
+                {message1} <b>{message2}<span>&#128512;</span></b> 
+            </SweetAlert>
+            setAlert(getAlert())
         }
-
     }, [statusEmail])
 
     const onConfirm = () => {
         setAlertStatus(false)
-        setMessage("")
-        setstatusEmail("")
+        setMessage1("")
+        setMessage2("")
+        setStatusEmail("")
+        setEmail("")
     }
 
-    const getCode=()=>{
-        setCode(true)
-    }
+    // const getOtp = () => {
+    //     setOtp(true)
+    // }
 
     const emailChange = (e) => {
         setEmail(e.target.value)
     }
 
-    const codeChange = (e) => {
-        setCodeValue(e.target.value)
-    }
+    // const otpChange = (e) => {
+    //     setOtpValue(e.target.value)
+    // }
 
     const emailSubmit = () => {
 
         const body = {
             email: email,
         }
-        axios.post('/email-verification', body)
+        axios.post('/email-verify', body)
             .then((res) => {
                 setAlertStatus(true)
-                setMessage(res.data.message)
-                setstatusEmail(res.data.status)
+                setMessage1(res.data.message1)
+                setMessage2(res.data.message2)
+                setStatusEmail(res.data.status)
             })
             .catch(err => {
                 console.log(err);
@@ -88,13 +101,19 @@ function Login(props) {
     }
 
     return (
-        <div  style={{ height: '100vh', background: `URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover` }}>
+        <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: `URL('https://img.freepik.com/free-vector/abstract-watercolor-pastel-background_87374-122.jpg?w=2000') center/cover` }}>
             {
                 alertStatus && alert
             }
-            <Container maxWidth="sm" style={{ height: '62vh', width: '26vw', position: 'relative', top: '19vh' }}>
-                <Paper elevation={12} sx={{ borderRadius: '20px', bgcolor: '#FFFFFF', height: '62vh', width: '100%' }}>
-
+            <Paper elevation={12} sx={{ borderRadius: '20px', padding: '0px 24px', bgcolor: '#FFFFFF', height: `34vh`, width: '24vw' }}>
+                <Stack
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={3}
+                    height='34vh'
+                >
+                    <h2>Email Verification</h2>
                     <TextField
                         value={email}
                         onChange={emailChange}
@@ -102,32 +121,33 @@ function Login(props) {
                         variant="outlined"
                         fullWidth />
 
-                    {
-                        code &&
+                    {/* {
+                        otp &&
                         <TextField
-                            name='code'
-                            value={codeValue}
-                            onChange={codeChange}
-                            label="Enter verification code"
+                            value={otpValue}
+                            onChange={otpChange}
+                            label="Enter verification otp"
                             variant="outlined"
                             fullWidth />
-                    }
+                    } */}
 
-                    <Button type='submit' style={{ padding: '10px' }} onClick={emailSubmit} variant="contained" endIcon={<LoginIcon />} fullWidth>
-                        {code?`Change Password`:`Get code`}
+                    <Button type='submit' style={{ padding: '10px' }} onClick={emailSubmit} variant="contained" fullWidth>
+                        {/* {otp ? `Change Password` : `Get otp`} */} 
+                        Verify
                     </Button>
-                </Paper>
-            </Container >
+                </Stack >
+            </Paper>
         </div >
     )
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        loginUser: () => dispatch(loginUser())
-    }
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         loginUser: () => dispatch(loginUser())
+//     }
+// }
 
-export default connect(null, mapDispatchToProps)(Login)
+// export default connect(null, mapDispatchToProps)(Login)
+export default ForgotPassword
 
 
