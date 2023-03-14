@@ -75,12 +75,13 @@ export const signIn = async (req, res) => {
             try {
                 const token = await existingUser.generateAuthToken()
                 // console.log(token)
-                res.cookie('user-cookie',token,{
-                    expires:new Date(Date.now()+9000000),
+                res.cookie("user-cookie",token,{
+                    // expires:new Date(Date.now()+9000000),
+                    maxAge:9000000,
                     httpOnly:true
                 })
 
-                return res.status(200).json({ status: 'success',token:token })
+                return res.status(200).json({ status: 'success',message: 'success',token:token,result:existingUser })
             }
             catch (err) {
                 console.log(err)

@@ -12,10 +12,9 @@ function App() {
     <Provider store={store}>
       <Routes>
         <Route path='/login' element={<Authentication />} />
+        <Route path='/' element={<Homepage />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/' element={sessionStorage.getItem('username')?<Homepage />:<Authentication />} />
-        <Route path='/post' element={sessionStorage.getItem('username')?<Post />:<Authentication />} />
-        <Route path='/chatSection' element={sessionStorage.getItem('username')?<ChatSection/>:<Authentication />} />
+        {/* <Route path='/' element={sessionStorage.getItem('username')?<Homepage />:<Authentication />} /> */}
       </Routes>
     </Provider>
   );

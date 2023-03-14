@@ -88,7 +88,7 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-function Login(props) {
+function Authentication(props) {
 
   function a11yProps(index) {
     return {
@@ -341,6 +341,7 @@ function Login(props) {
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
+        console.log(res.data)
       })
       .catch(err => {
         console.log(err);
@@ -585,6 +586,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Login)
+export default connect(null, mapDispatchToProps)(Authentication)
 
 

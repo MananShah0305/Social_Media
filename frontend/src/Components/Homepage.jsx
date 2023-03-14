@@ -9,15 +9,15 @@ function Homepage(props) {
 
     let navigate = useNavigate();
 
-    useEffect(() => {
-        if (sessionStorage?.getItem('isLoggedIn') != true) {
-            console.log(sessionStorage?.getItem('isLoggedIn'))
-            // navigate('/login')
-        }
-        else {
-            console.log(sessionStorage?.getItem('isLoggedIn'))
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (sessionStorage?.getItem('isLoggedIn') != true) {
+    //         console.log(sessionStorage?.getItem('isLoggedIn'))
+    //         navigate('/login')
+    //     }
+    //     else {
+    //         console.log(sessionStorage?.getItem('isLoggedIn'))
+    //     }
+    // }, [])
 
     return (
         <>
