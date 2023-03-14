@@ -260,7 +260,7 @@ function Authentication(props) {
       profilePic: profilePic,
       bio: bio
     }
-    axios.post('/signUp', body)
+    axios.post('/sign-up', body)
       .then((res) => {
         console.log(body)
         setValue(0)
@@ -289,7 +289,7 @@ function Authentication(props) {
       password: '',
     },
     onSubmit: () => {
-      axios.get('/loginCredentials')
+      axios.get('/login-credentials')
         .then(res => {
           if (res.data.credentials.length == 0) {
             console.log('success')
@@ -335,13 +335,13 @@ function Authentication(props) {
       username: login.username,
       password: login.password
     }
-    axios.post('/signIn', body)
+    axios.post('/sign-in', body)
       .then((res) => {
         usernameLogin = body.username
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
-        console.log(res.data)
+        localStorage.setItem('userAuthorizeToken',res.data.result.token)
       })
       .catch(err => {
         console.log(err);

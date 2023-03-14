@@ -38,16 +38,17 @@ function Navbar(props) {
     const [userInfo, setUserInfo] = useState({})
 
     useEffect(() => {
-        axios.get('/username')
-            .then(res => {
-                res.data.allUserInfo.map(user => {
-                    if (props.username == user.username) {
-                        setUserInfo(user)
-                    }
-                    return;
-                })
-            })
-            .catch(err => console.log(err))
+        // axios.get('/username')
+        //     .then(res => {
+        //         res.data.allUserInfo.map(user => {
+        //             if (props.username == user.username) {
+        //                 setUserInfo(user)
+        //             }
+        //             return;
+        //         })
+        //     })
+        //     .catch(err => console.log(err))
+        setUserInfo(props.userInfo)
     })
 
     const toggleDrawer = (anchor, open) => (event) => {
@@ -168,8 +169,8 @@ function Navbar(props) {
                         </Tooltip>
                         <Tooltip title="Logout" placement="bottom">
                             <Link to="/login">
-                                <IconButton>
-                                    <LogoutIcon style={{ fontSize: '26px', color: '#4181f6' }} onClick={logoutSite}></LogoutIcon>
+                                <IconButton onClick={logoutSite}>
+                                    <LogoutIcon style={{ fontSize: '26px', color: '#4181f6' }}></LogoutIcon>
                                 </IconButton>
                             </Link>
                         </Tooltip>

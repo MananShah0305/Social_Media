@@ -74,19 +74,26 @@ export const signIn = async (req, res) => {
         else {
             try {
                 const token = await existingUser.generateAuthToken()
-                // console.log(token)
-                res.cookie("user-cookie",token,{
+                res.cookie("user-cookie", token, {
                     // expires:new Date(Date.now()+9000000),
-                    maxAge:9000000,
-                    httpOnly:true
+                    // maxAge:9000000,
+                    httpOnly: true
                 })
 
-                return res.status(200).json({ status: 'success',message: 'success',token:token,result:existingUser })
+                return res.status(200).json({ status: 'success', message: 'success',result: existingUser })
             }
             catch (err) {
                 console.log(err)
             }
         }
+    }
+}
+
+export const validateUser = async (req, res) => {
+    try {
+        res.status(200).json({status:'success',userDetails:req.user})
+    } catch (error) {
+        console.log(error)
     }
 }
 
