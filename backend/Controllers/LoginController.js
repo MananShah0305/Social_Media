@@ -4,7 +4,8 @@ const { validationResult } = validator;
 import LoginModel from '../Model/LoginModel.js'
 import jwt from 'jsonwebtoken'
 import nodemailer from 'nodemailer'
-import { secret_key } from '../index.js'
+
+const secret_key = 'meetup_pvt_ltd_tech_team'
 
 export const getCredentials = (req, res) => {
     LoginModel.find()
@@ -18,12 +19,15 @@ export const getCredentials = (req, res) => {
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
-    auth: {
+    providerauth: {
         user: process.env.EMAIL,
         pass: process.env.PASSWORD
-    }
+    },
+    // auth: {
+    //     user: process.env.EMAIL,
+    //     pass: process.env.PASSWORD
+    // }
 })
-
 
 export const getUsername = async (req, res) => {
     const userInfo = await LoginModel.find({}, { username: 1, profilePic: 1 })
@@ -80,7 +84,7 @@ export const signIn = async (req, res) => {
                     httpOnly: true
                 })
 
-                return res.status(200).json({ status: 'success', message: 'success',result: existingUser })
+                return res.status(200).json({ status: 'success', message: 'success', result: existingUser })
             }
             catch (err) {
                 console.log(err)
@@ -91,7 +95,7 @@ export const signIn = async (req, res) => {
 
 export const validateUser = async (req, res) => {
     try {
-        res.status(200).json({status:'success',userDetails:req.user})
+        res.status(200).json({ status: 'success', userDetails: req.user })
     } catch (error) {
         console.log(error)
     }
@@ -108,11 +112,35 @@ export const emailVerify = async (req, res) => {
 
     else {
         try {
+
             const token = jwt.sign({ _id: existingUser._id }, secret_key, {
                 expiresIn: "1d"
             });
-            // console.log(existingUser)
-            return res.status(200).json({ message1: 'Email is successfully verified.', message2: 'Check email to change password', status: 'success' })
+
+            const mailOptions = {
+                from: process.env.EMAIL,
+                to: email,
+                subject: "Change password.",
+                html: `<a>http://localhost:3000/forgot-password/${existingUser._id}/${token}</a>`
+            }
+
+            transporter.verify(function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Server is ready to take our messages');
+                }
+            });
+
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    console.log(info)
+                    return res.status(200).json({ message1: 'Email is successfully verified.', message2: 'Check email to change password', status: 'success' })
+                }
+            })
         }
         catch (error) {
             console.log(error)
@@ -120,3 +148,25 @@ export const emailVerify = async (req, res) => {
     }
 }
 
+export const passwordChange = async (req, res) => {
+
+    const errors = validationResult(req);
+    console.log(errors)
+    if (!errors.isEmpty()) {
+        return res.status(422).send('Not sent');
+    }
+    else {
+        try {
+            const { email, password } = req.body
+            const existingUser = await LoginModel.findOne({ email: email })
+
+            const passwordEncrypted = await bcrypt.hash(password, 12)
+            const loginDetails = await LoginModel.findByIdAndUpdate({_id:existingUser._id},{password:passwordEncrypted})
+            console.log(loginDetails)
+            return res.status(200).json({ message: 'Password is reset successfully', status: 'success' })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+}

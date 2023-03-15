@@ -20,7 +20,6 @@ app.use(cookieParser())
 
 const port = process.env.PORT;
 const url=process.env.CONNECTION_URL
-export const secret_key=process.env.JWT_SECRET_KEY
 
 app.get('/', (req, res) => {
     res.send('hi')

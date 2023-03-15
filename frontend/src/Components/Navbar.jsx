@@ -49,6 +49,7 @@ function Navbar(props) {
         //     })
         //     .catch(err => console.log(err))
         setUserInfo(props.userInfo)
+        console.log(props.userInfo)
     })
 
     const toggleDrawer = (anchor, open) => (event) => {
@@ -123,7 +124,8 @@ function Navbar(props) {
     };
 
     const logoutSite = () => {
-        props.logoutUser()
+        // props.logoutUser()
+        localStorage.removeItem('userAuthorizeToken')
         navigate('/login')
     }
 
@@ -138,7 +140,7 @@ function Navbar(props) {
                                 ?
                                 <img src={userInfo.profilePic} alt="Profile Pic" width='50' height='50' style={{ borderRadius: '40px' }} />
                                 :
-                                <Avatar sx={{ bgcolor: '#0070ff', color: 'white' }}>{userInfo.username?.charAt(0)}</Avatar>
+                                <Avatar sx={{ bgcolor: '#0070ff', color: 'white' }}>{userInfo?.username?.charAt(0)}</Avatar>
                         }
                         <h5 style={{ margin: '0px', marginLeft: '8px' }}>{userInfo.username}</h5>
                     </div>

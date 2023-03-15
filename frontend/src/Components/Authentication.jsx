@@ -360,7 +360,7 @@ function Authentication(props) {
   }
 
   const forgotPassword = () => {
-    navigate('/forgot-password')
+    navigate('/email-verify')
   }
 
   return (

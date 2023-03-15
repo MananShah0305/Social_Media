@@ -12,13 +12,9 @@ import { connect } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Paper from '@mui/material/Paper';
 
-function ForgotPassword(props) {
+function EmailVerify(props) {
 
     let navigate = useNavigate();
-
-    // const [otp, setOtp] = useState(false)
-
-    // const [otpValue, setOtpValue] = useState('')
 
     const [email, setEmail] = useState('')
 
@@ -47,7 +43,6 @@ function ForgotPassword(props) {
             setAlert(getAlert())
         }
         else if (statusEmail == 'success') {
-            // getOtp()
             const getAlert = () => <SweetAlert
                 success
                 title="Success!"
@@ -71,17 +66,9 @@ function ForgotPassword(props) {
         setEmail("")
     }
 
-    // const getOtp = () => {
-    //     setOtp(true)
-    // }
-
     const emailChange = (e) => {
         setEmail(e.target.value)
     }
-
-    // const otpChange = (e) => {
-    //     setOtpValue(e.target.value)
-    // }
 
     const emailSubmit = () => {
 
@@ -105,13 +92,13 @@ function ForgotPassword(props) {
             {
                 alertStatus && alert
             }
-            <Paper elevation={12} sx={{ borderRadius: '20px', padding: '0px 24px', bgcolor: '#FFFFFF', height: `34vh`, width: '24vw' }}>
+            <Paper elevation={12} sx={{ borderRadius: '20px', padding: '0px 24px', bgcolor: '#FFFFFF', height: `35vh`, width: '24vw' }}>
                 <Stack
                     direction="column"
                     justifyContent="center"
                     alignItems="center"
-                    spacing={3}
-                    height='34vh'
+                    spacing={3.5}
+                    height='35vh'
                 >
                     <h2>Email Verification</h2>
                     <TextField
@@ -121,18 +108,7 @@ function ForgotPassword(props) {
                         variant="outlined"
                         fullWidth />
 
-                    {/* {
-                        otp &&
-                        <TextField
-                            value={otpValue}
-                            onChange={otpChange}
-                            label="Enter verification otp"
-                            variant="outlined"
-                            fullWidth />
-                    } */}
-
-                    <Button type='submit' style={{ padding: '10px' }} onClick={emailSubmit} variant="contained" fullWidth>
-                        {/* {otp ? `Change Password` : `Get otp`} */} 
+                    <Button type='submit' style={{ padding: '10px' }} onClick={emailSubmit} variant="contained" fullWidth> 
                         Verify
                     </Button>
                 </Stack >
@@ -148,6 +124,6 @@ function ForgotPassword(props) {
 // }
 
 // export default connect(null, mapDispatchToProps)(Login)
-export default ForgotPassword
+export default EmailVerify
 
 
