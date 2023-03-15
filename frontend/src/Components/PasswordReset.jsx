@@ -7,7 +7,6 @@ import Button from '@mui/material/Button';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import axios from '../axios.js'
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../LoginRedux/loginActions.js'
 import { connect } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Paper from '@mui/material/Paper';
@@ -19,9 +18,11 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-function PasswordReset() {
+function PasswordReset(props) {
 
     let navigate = useNavigate();
+
+    const [email, setEmail] = useState('')
 
     const [showPassword, setShowPassword] = useState(false)
 
@@ -34,6 +35,7 @@ function PasswordReset() {
     const [alert, setAlert] = useState(null)
 
     useEffect(() => {
+        console.log(props.emailVerify)
         const getAlert = () => <SweetAlert
             success
             title="Success!"
@@ -47,6 +49,24 @@ function PasswordReset() {
         </SweetAlert>
         setAlert(getAlert())
     }, [statusPassword])
+
+    useEffect(() => {
+
+        const token=localStorage.getItem('userAuthorizeToken')
+        
+        axios.get('/validate-user', {
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then(res => {
+                setEmail(res.data.userDetails.email)
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+    }, [])
 
     const onConfirm = () => {
         setAlertStatus(false)
@@ -62,7 +82,7 @@ function PasswordReset() {
     const passwordSubmit = () => {
 
         const body = {
-            email:'mndp0305@gmail.com',
+            email: email,
             password: formik.values.password,
         }
         axios.post('/password-reset', body)
@@ -70,6 +90,7 @@ function PasswordReset() {
                 setAlertStatus(true)
                 setMessage(res.data.message)
                 setStatusPassword(res.data.status)
+                setEmail('')
             })
             .catch(err => {
                 console.log(err);
@@ -114,7 +135,7 @@ function PasswordReset() {
                         // height='48vh'
                         >
                             <TextField
-                                value='mndp0305@gmail.com'
+                                value={email}
                                 label="Email"
                                 variant="outlined"
                                 disabled
@@ -154,5 +175,13 @@ function PasswordReset() {
         </div >
     )
 }
+
+// const mapStateToProps = (state) => {
+//     return {
+//         emailVerify: state.email,
+//     }
+// }
+
+// export default connect(mapStateToProps)(PasswordReset)
 
 export default PasswordReset

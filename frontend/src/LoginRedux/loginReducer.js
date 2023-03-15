@@ -1,10 +1,13 @@
 import { LOGIN_USER } from './loginTypes.js'
 import { LOGOUT_USER } from './loginTypes.js'
-import { usernameLogin,isGoogleLogin } from '../Components/Authentication.jsx'
+import { EMAIL_VERIFY } from './loginTypes.js'
+import { usernameLogin, isGoogleLogin } from '../Components/Authentication.jsx'
+import { emailVerify } from '../Components/EmailVerify.jsx'
 
 const initialState = {
     username: '',
     isLoggedIn: false,
+    email: '',
     // isGoogleLogin:false
 }
 
@@ -32,6 +35,13 @@ const reducer = (state = initialState, action) => {
                 username: '',
                 isLoggedIn: false,
                 // isGoogleLogin: false,
+            }
+
+        case EMAIL_VERIFY:
+            sessionStorage.setItem('email', emailVerify);
+            return {
+                ...state,
+                email: emailVerify
             }
 
         default:

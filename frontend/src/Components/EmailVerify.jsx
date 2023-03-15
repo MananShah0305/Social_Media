@@ -7,10 +7,12 @@ import Button from '@mui/material/Button';
 import SweetAlert from 'react-bootstrap-sweetalert'
 import axios from '../axios.js'
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../LoginRedux/loginActions.js'
+import { emailVerification } from '../LoginRedux/loginActions.js'
 import { connect } from 'react-redux'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Paper from '@mui/material/Paper';
+
+let emailVerify=''
 
 function EmailVerify(props) {
 
@@ -59,6 +61,7 @@ function EmailVerify(props) {
     }, [statusEmail])
 
     const onConfirm = () => {
+        emailVerify=email
         setAlertStatus(false)
         setMessage1("")
         setMessage2("")
@@ -71,7 +74,7 @@ function EmailVerify(props) {
     }
 
     const emailSubmit = () => {
-
+        console.log(email)
         const body = {
             email: email,
         }
@@ -81,6 +84,7 @@ function EmailVerify(props) {
                 setMessage1(res.data.message1)
                 setMessage2(res.data.message2)
                 setStatusEmail(res.data.status)
+                props.emailVerification()
             })
             .catch(err => {
                 console.log(err);
@@ -117,13 +121,14 @@ function EmailVerify(props) {
     )
 }
 
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         loginUser: () => dispatch(loginUser())
-//     }
-// }
+export {emailVerify}
 
-// export default connect(null, mapDispatchToProps)(Login)
-export default EmailVerify
+const mapDispatchToProps = (dispatch) => {
+    return {
+        emailVerification: () => dispatch(emailVerification())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(EmailVerify)
 
 
