@@ -13,11 +13,6 @@ import { blueGrey, deepOrange, deepPurple } from '@mui/material/colors';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -27,8 +22,15 @@ import Modal from 'react-bootstrap/Modal';
 import Button from '@mui/material/Button';
 import ButtonBootstrap from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import { InputGroup, FormControl } from 'react-bootstrap';
 import Tooltip from '@mui/material/Tooltip';
+
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import SearchIcon from '@mui/icons-material/Search';
 
 function Homepage(props) {
 
@@ -87,10 +89,161 @@ function Homepage(props) {
                     direction="row"
                     justifyContent="space-between"
                     // alignItems="center"
-                    divider={<Divider orientation="vertical" />}
+                    divider={<Divider orientation="vertical" light style={{ width: '4px' }} />}
                     width='100%'
-                    maxHeight= '88vh'
+                    maxHeight='88vh'
                 >
+                    <Stack spacing={2} style={{ backgroundColor: '#e6e6e64f', paddingTop: '40px', width: '100vw' }}>
+                        <InputGroup style={{ height: '50px ', margin: 'auto', width: '90%' }}>
+                            <FormControl
+                                placeholder="Search for friends..."
+                                aria-label="friends"
+                                aria-describedby="basic-addon1"
+                                style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px' }}
+                            />
+                            <InputGroup.Text id="basic-addon1" style={{ height: '50px', backgroundColor: 'rgb(65, 129, 246)', cursor: 'pointer', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}><SearchIcon style={{ color: 'white' }}></SearchIcon></InputGroup.Text>
+                        </InputGroup>
+                        <Paper elevation={0} style={{ height: '84vh', backgroundColor: 'white', overflowY: 'scroll', padding: '0px 20px' }}>
+                            <h2 style={{ margin: '20px' }}>Chats</h2>
+                            <Paper elevation={0}>
+                                <Stack
+                                    spacing={0}
+                                    width='100%'
+                                >
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}
+                                        style={{borderTop:'2px solid lightgrey',padding:'10px'}}
+                                        >
+                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
+                                        <Stack direction='column'
+                                            justifyContent='center'
+                                            spacing={1}>
+                                            <b>cric.manan</b>
+                                            <p style={{margin:'0px'}}>Hey, what are you doing?</p>
+                                        </Stack>
+                                    </Stack>
+                                </Stack>
+                            </Paper>
+                        </Paper>
+                    </Stack>
                     <Stack spacing={4} style={{ backgroundColor: '#e6e6e64f', padding: '28px', width: '100vw', overflowY: 'scroll' }}>
                         <Paper elevation={3} style={{ minHeight: '82vh' }}>
                             <Stack direction='row'
@@ -136,22 +289,22 @@ function Homepage(props) {
                             </Stack>
                             <img src="https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c?w=164&h=164&fit=crop&auto=format" alt="Post" style={{ aspectRatio: '1.6' }} width='100%' />
                             <Stack direction='row'
-                                alignItems='baseline'
+                                alignItems='center'
                                 spacing={0}
-                                style={{ margin: '8px ' }}>
+                                style={{ margin: '4px 8px 0px 8px' }}>
                                 <Tooltip title="Like">
                                     <IconButton onClick={handleLike}>
                                         {
                                             like ?
-                                            <FavoriteIcon style={{ fontSize: '27px',color:'red' }} />
-                                            :
-                                            <FavoriteBorderIcon style={{ fontSize: '27px' }} />
+                                                <FavoriteIcon style={{ fontSize: '27px', color: 'red' }} />
+                                                :
+                                                <FavoriteBorderIcon style={{ fontSize: '27px' }} />
                                         }
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Comment">
                                     <IconButton onClick={handleShowAddComment}>
-                                        <MapsUgcOutlinedIcon style={{ fontSize: '26px' }} />
+                                        <MapsUgcOutlinedIcon style={{ fontSize: '25px' }} />
                                     </IconButton>
                                 </Tooltip>
                                 <Modal
@@ -301,20 +454,6 @@ function Homepage(props) {
                                     </Stack>
                                 </AccordionDetails>
                             </Accordion>
-                        </Paper>
-                    </Stack>
-                    <Stack spacing={2} style={{ backgroundColor: 'white', padding: '40px', width: '100vw' }}>
-                        <Paper elevation={3}>
-                            Manan
-                        </Paper>
-                        <Paper elevation={3}>
-                            Manan
-                        </Paper>
-                        <Paper elevation={3}>
-                            Manan
-                        </Paper>
-                        <Paper elevation={3}>
-                            Manan
                         </Paper>
                     </Stack>
                 </Stack>
