@@ -279,7 +279,8 @@ function Authentication(props) {
   const validationSchema = yup.object({
     email: yup.string().required('Email is required').email('Invalid Email'),
     username: yup.string().required('Username is required').min(6, 'Username must have atleast 6 characters').max(16, 'Username must have atmost 16 characters').matches(/^[a-zA-Z0-9_.]+$/, 'Username should only be composed of letters, numbers, underscore and period.'),
-    password: yup.string().required('Password is required').min(8, 'Password must have atleast 8 characters').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$/, 'Password should contain atleast one uppercase character, one lowercase character, one digit and one special character.')
+    password: yup.string().required('Password is required').min(8, 'Password must have atleast 8 characters').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,}$/, 'Password should contain atleast one uppercase character, one lowercase character, one digit and one special character.'),
+    bio: yup.string().max(8, 'Keep your bio shorter than 100 characters')
   })
 
   const formik = useFormik({

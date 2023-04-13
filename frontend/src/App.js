@@ -16,6 +16,7 @@ function App() {
         <Route path='/login' element={<Authentication />} />
         <Route path='/email-verify' element={<EmailVerify />} />
         <Route path='/password-reset/:id/:token' element={<PasswordReset />} />
+        <Route path='/chat-section' element={<ChatSection />} />
         {/* <Route path='/' element={localStorage.getItem('userAuthorizeToken')?<Homepage />:<Authentication />} /> */}
         <Route path='/' element={<Homepage />} />
       </Routes>

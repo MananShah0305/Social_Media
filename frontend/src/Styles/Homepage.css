@@ -1,18 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Oleo+Script+Swash+Caps&family=Red+Hat+Display:wght@500&family=Seaweed+Script&display=swap');
 ::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888; 
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-  }
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.profile {
+  margin: 0px auto;
+  font-family: "Oleo Script Swash Caps", cursive;
+}
+
+.bio{
+  font-family: 'Courgette', cursive;
+  color: #0000008c;
+}
