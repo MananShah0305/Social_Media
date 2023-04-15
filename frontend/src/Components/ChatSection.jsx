@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Navbar from './Navbar.jsx';
 import { useNavigate } from 'react-router-dom';
-import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import axios from '../axios.js'
 import Stack from '@mui/material/Stack';
@@ -19,7 +18,6 @@ import Form from 'react-bootstrap/Form';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Tooltip from '@mui/material/Tooltip';
 import '../Styles/Homepage.css'
-import CloseIcon from '@mui/icons-material/Close';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -32,7 +30,20 @@ import SendIcon from '@mui/icons-material/Send';
 
 function ChatSection(props) {
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [activeChats, setActiveChats] = useState([])
+
+    useEffect(() => {
+        axios.get('/chats')
+            .then(res => {
+                setActiveChats(res.data.chatInfo)
+                console.log()
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+    }, [])
+
 
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
