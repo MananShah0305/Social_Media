@@ -8,13 +8,14 @@ const messageSchema = {
 
 const friendSchema = {
     name: String,
+    showChat: Boolean,
     chats:[messageSchema]
 }
 
-const chatSchema = {
+const chatSchema = new mongoose.Schema({
     name: String,
     friends: [friendSchema]
-}
+}, { collection: 'chat-data' })
 
 const chats = mongoose.model('Chats', chatSchema)
 
