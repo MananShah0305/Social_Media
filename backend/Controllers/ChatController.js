@@ -10,12 +10,12 @@ export const getChats = async (req, res) => {
     }
 }
 
-export const friendPost = async (req, res) => {
+export const addFriend = async (req, res) => {
     const existingUser = await chatsModel.findOne({ name: req.body.username })
     const friendAdd = { name: req.body.friendName, chats: [] }
 
-    if (exists) {
-        chatsModel.updateOne({ name: existingUser.friends.name }, {
+    if (existingUser) {
+        chatsModel.updateOne({ name: existingUser.name }, {
             $push: {
                 friends: friendAdd
             }

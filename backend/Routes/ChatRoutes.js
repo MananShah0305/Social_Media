@@ -1,10 +1,10 @@
 import express from 'express'
 const router = express.Router()
-import {friendPost, chatPost,getChats} from '../Controllers/ChatController.js'
+import {addFriend, chatPost,getChats} from '../Controllers/ChatController.js'
 
 router.route('/').get(getChats)
 
-router.route('/').post(friendPost)
+router.route('/').post(addFriend)
 
 router.route('/:id').patch(chatPost)
 
