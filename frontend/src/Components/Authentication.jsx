@@ -551,7 +551,6 @@ function Authentication(props) {
                           <ButtonBootstrap
                             onClick={showCroppedImage}
                             variant="contained"
-                            variant="success"
                             style={{ width: '80px', color: 'white', marginRight: '10px' }}
                           >Crop
                           </ButtonBootstrap>

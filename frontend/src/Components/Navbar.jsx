@@ -15,8 +15,9 @@ import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { red, blue, green, orange } from '@mui/material/colors';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -36,20 +37,19 @@ function Navbar(props) {
     let navigate = useNavigate();
     const [state, setState] = useState({ right: false });
     const [userInfo, setUserInfo] = useState({})
+    const [addFriend, setAddFriend] = useState('')
 
     useEffect(() => {
-        // axios.get('/username')
-        //     .then(res => {
-        //         res.data.allUserInfo.map(user => {
-        //             if (props.username == user.username) {
-        //                 setUserInfo(user)
-        //             }
-        //             return;
-        //         })
-        //     })
-        //     .catch(err => console.log(err))
-        setUserInfo(props.userInfo)
-        console.log(props.userInfo)
+        axios.get('/username')
+            .then(res => {
+                res.data.allUserInfo.map(user => {
+                    if (props.username == user.username) {
+                        setUserInfo(user)
+                    }
+                    return;
+                })
+            })
+            .catch(err => console.log(err))
     })
 
     const toggleDrawer = (anchor, open) => (event) => {
@@ -59,55 +59,6 @@ function Navbar(props) {
 
         setState({ ...state, [anchor]: open });
     };
-
-    const list = (anchor) => (
-        <Box
-            sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 500 }}
-            role="presentation"
-            onClick={toggleDrawer(anchor, false)}
-            onKeyDown={toggleDrawer(anchor, false)}
-        >
-            <Divider></Divider>
-            <List>
-                <ListItem>
-                    <ListItemIcon>
-                        <Avatar sx={{ bgcolor: red[500] }}>D</Avatar>
-                    </ListItemIcon>
-                    <ListItemText primary='Darshil Shah' />
-                    <ListItemIcon button>
-                        <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
-                    </ListItemIcon>
-                </ListItem>
-                <ListItem>
-                    <ListItemIcon>
-                        <Avatar sx={{ bgcolor: blue[500] }}>J</Avatar>
-                    </ListItemIcon>
-                    <ListItemText primary='Jimit Kapadia' />
-                    <ListItemIcon button>
-                        <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
-                    </ListItemIcon>
-                </ListItem>
-                <ListItem >
-                    <ListItemIcon>
-                        <Avatar sx={{ bgcolor: green[500] }}>A</Avatar>
-                    </ListItemIcon>
-                    <ListItemText primary='Aditya Dalal' />
-                    <ListItemIcon button>
-                        <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
-                    </ListItemIcon>
-                </ListItem>
-                <ListItem>
-                    <ListItemIcon>
-                        <Avatar sx={{ bgcolor: orange[500] }}>U</Avatar>
-                    </ListItemIcon>
-                    <ListItemText primary='Utkarsh Shah' />
-                    <ListItemIcon button>
-                        <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
-                    </ListItemIcon>
-                </ListItem>
-            </List>
-        </Box>
-    );
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -127,6 +78,16 @@ function Navbar(props) {
         // props.logoutUser()
         localStorage.removeItem('userAuthorizeToken')
         navigate('/login')
+    }
+
+    const addFriendFunc = () => {
+        axios.post('/chats/add-friend', { name: 'cric.manan', friendname: 'dashy1997' })
+        .then(()=>{
+            console.log('success')
+        })
+        .catch(err=>{
+            console.log(err)
+        })
     }
 
     return (
@@ -189,21 +150,14 @@ function Navbar(props) {
                                     open={state[anchor]}
                                     onClose={toggleDrawer(anchor, false)}
                                 >
-                                    <DrawerHeader style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#bbdcfe' }}>
+                                    <DrawerHeader style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#bbdcfe', width: '30vw' }}>
                                         <IconButton onClick={handleDrawerClose} style={{ backgroundColor: 'rgb(65, 129, 246)', color: 'white' }}>
                                             <ChevronRightIcon />
                                         </IconButton>
                                         <Box style={{ borderRadius: '20px', display: 'flex', alignItems: 'flex-end', flex: '0.94', justifyContent: 'center', backgroundColor: 'white' }}>
-                                            {/* <SavedSearchIcon></SavedSearchIcon> */}
-                                            {/* <TextField
-                                            name='search'
-                                            // value={login.password}
-                                            // onChange={loginChange}
-                                            label="Search for Friends"
-                                            variant="outlined" /> */}
                                             <InputGroup style={{ height: '50px ' }}>
                                                 <FormControl
-                                                    placeholder="Search for friends..."
+                                                    placeholder="Search for users..."
                                                     aria-label="friends"
                                                     aria-describedby="basic-addon1"
                                                     style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px' }}
@@ -212,7 +166,22 @@ function Navbar(props) {
                                             </InputGroup>
                                         </Box>
                                     </DrawerHeader>
-                                    {list(anchor)}
+                                    <List >
+                                        <ListItem onClick={addFriendFunc}
+                                            secondaryAction={
+                                                <IconButton>
+                                                    <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
+                                                </IconButton>
+                                            }
+                                        >
+                                            <ListItemAvatar>
+                                                <Avatar sx={{ bgcolor: orange[500] }}>D</Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary="dashy1997"
+                                            />
+                                        </ListItem>
+                                    </List>
                                 </Drawer>
                             </React.Fragment>
                         ))}

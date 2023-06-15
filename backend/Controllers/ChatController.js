@@ -1,7 +1,7 @@
 import chatsModel from '../Model/ChatModel.js'
 
 export const getChats = async (req, res) => {
-    const result = await chatsModel.findOne({name:req.body.name})
+    const result = await chatsModel.findOne({ name: req.body.name })
     try {
         return res.status('200').json({ status: 'success', chatInfo: result })
     }
@@ -11,31 +11,20 @@ export const getChats = async (req, res) => {
 }
 
 export const addFriend = async (req, res) => {
-    const existingUser = await chatsModel.findOne({ name: req.body.username })
+    const existingUser = await chatsModel.findOne({ name: req.body.name })
     const friendAdd = { name: req.body.friendName, chats: [] }
 
-    if (existingUser) {
-        chatsModel.updateOne({ name: existingUser.name }, {
-            $push: {
-                friends: friendAdd
-            }
+    chatsModel.updateOne({ name: existingUser.name }, {
+        $push: {
+            friends: friendAdd
+        }
+    })
+        .then(() => {
+            console.log('Success')
         })
-            .then(() => {
-                console.log('Success')
-            })
-            .catch(err => console.log(err))
+        .catch(err => console.log(err))
 
-        return res.status(200).json({ message: 'Friend created', status: 'success' })
-    }
-
-    else {
-        console.log('false')
-        const chatDetails = new chatsModel({
-            name, friends: friendAdd
-        })
-        chatDetails.save()
-        return res.status(200).json({ message: 'Friend created', status: 'success' })
-    }
+    return res.status(200).json({ message: 'Friend created', status: 'success' })
 }
 
 export const chatPost = async (req, res) => {
@@ -48,7 +37,7 @@ export const chatPost = async (req, res) => {
         $cond: {
             if: {
                 $eq: ["$showChat", false]
-            }, 
+            },
             then: true
         },
         $push: {

@@ -412,7 +412,7 @@ function Homepage(props) {
                             >
                                 <Stack
                                     direction='row'
-                                    justifyContent='space-between'
+                                    justifyContent='space-around'
                                     alignItems='center'
                                 >
                                     <Avatar sx={{ width: 100, height: 100 }} alt="Travis Howard" src="https://media.istockphoto.com/id/486121005/photo/sun-rays-inside-coconut-palms.jpg?b=1&s=170667a&w=0&k=20&c=RsE02692qNh7SapxtJ7CzuzsmBpuuOm25NRxUazCgcE=" />
