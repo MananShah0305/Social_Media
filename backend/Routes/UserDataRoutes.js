@@ -1,5 +1,5 @@
 import express from 'express'
-import { getCredentials,getUsername, signUp,signIn,validateUser,emailVerify,passwordChange } from '../Controllers/LoginController.js'
+import { getCredentials,getUsername, signUp,signIn,validateUser,emailVerify,passwordChange } from '../Controllers/UserDataController.js'
 import validator from 'express-validator';
 const { check } = validator;
 

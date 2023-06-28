@@ -2,7 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import postRouter from './Routes/PostsRoutes.js'
-import loginRouter from './Routes/LoginRoutes.js'
+import userDataRouter from './Routes/UserDataRoutes.js'
 import chatRouter from './Routes/ChatRoutes.js'
 import multer from 'multer'
 import dotenv from 'dotenv'
@@ -37,5 +37,5 @@ mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: tr
 // app.post('/post', postRouter) use the below instead of above
 
 app.use('/post', postRouter) //Here '/post' is mentioned,so in routes, only mention '/'
-app.use('/', loginRouter) 
+app.use('/', userDataRouter) 
 app.use('/chats', chatRouter) 

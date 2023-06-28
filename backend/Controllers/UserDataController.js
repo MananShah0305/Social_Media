@@ -1,14 +1,14 @@
 import bcrypt from "bcrypt"
 import validator from "express-validator";
 const { validationResult } = validator;
-import LoginModel from "../Model/LoginModel.js"
+import UserDataModel from "../Model/UserDataModel.js"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
 
 const secret_key = "meetup_pvt_ltd_tech_team"
 
 export const getCredentials = (req, res) => {
-    LoginModel.find()
+    UserDataModel.find()
         .then(result => {
             res.send({
                 status: "success",
@@ -18,7 +18,7 @@ export const getCredentials = (req, res) => {
 }
 
 export const getUsername = async (req, res) => {
-    const userInfo = await LoginModel.find({}, { username: 1, profilePic: 1 })
+    const userInfo = await UserDataModel.find({}, { username: 1, profilePic: 1 })
     res.status(200).json({ allUserInfo: userInfo })
 }
 
@@ -30,8 +30,8 @@ export const signUp = async (req, res) => {
         return res.status(422).send("Not sent");
     }
     else {
-        const existingEmail = await LoginModel.findOne({ email })
-        const existingUsername = await LoginModel.findOne({ username })
+        const existingEmail = await UserDataModel.findOne({ email })
+        const existingUsername = await UserDataModel.findOne({ username })
         if (existingEmail) {
             return res.status(200).json({ message: "This email is already registered", status: "error" })
         }
@@ -40,7 +40,7 @@ export const signUp = async (req, res) => {
         }
         else {
             const passwordEncrypted = await bcrypt.hash(password, 12)
-            const loginDetails = await new LoginModel({
+            const loginDetails = await new UserDataModel({
                 email, username, password: passwordEncrypted, profilePic, bio
             })
 
@@ -54,7 +54,7 @@ export const signUp = async (req, res) => {
 export const signIn = async (req, res) => {
     const { username, password } = req.body
 
-    const existingUser = await LoginModel.findOne({ username })
+    const existingUser = await UserDataModel.findOne({ username })
     if (!existingUser) {
         return res.status(200).json({ message: "This user does not have a registered account", status: "error" })
     }
@@ -92,7 +92,7 @@ export const validateUser = async (req, res) => {
 export const emailVerify = async (req, res) => {
 
     const { email } = req.body
-    const existingUser = await LoginModel.findOne({ email: email })
+    const existingUser = await UserDataModel.findOne({ email: email })
 
     if (!existingUser) {
         return res.status(200).json({ message1: "This email is not registered.", message2: "Enter a registered email", status: "error" })
@@ -160,10 +160,10 @@ export const passwordChange = async (req, res) => {
     else {
         try {
             const { email, password } = req.body
-            const existingUser = await LoginModel.findOne({ email: email })
+            const existingUser = await UserDataModel.findOne({ email: email })
 
             const passwordEncrypted = await bcrypt.hash(password, 12)
-            const loginDetails = await LoginModel.findByIdAndUpdate({ _id: existingUser._id }, { password: passwordEncrypted })
+            const loginDetails = await UserDataModel.findByIdAndUpdate({ _id: existingUser._id }, { password: passwordEncrypted })
             console.log(loginDetails)
             return res.status(200).json({ message: "Password is reset successfully", status: "success" })
         }

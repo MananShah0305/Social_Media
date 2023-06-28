@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import LoginModel from '../Model/LoginModel.js'
+import UserDataModel from '../Model/UserDataModel.js'
 
 const secret_key = 'meetup_pvt_ltd_tech_team'
 
@@ -7,7 +7,7 @@ const authenticate = async (req, res, next) => {
     try {
         const token = req.headers.authorization
         const verifyToken = jwt.verify(token, secret_key)
-        const user = await LoginModel.findOne({ _id: verifyToken._id })
+        const user = await UserDataModel.findOne({ _id: verifyToken._id })
 
         if (!user) {
             res.status(404).json({ status: 'error', message: 'User not found' })

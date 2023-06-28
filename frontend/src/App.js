@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Authentication from './Components/Authentication.jsx'
 import Homepage from './Components/Homepage.jsx'
-import Post from './Components/Post.jsx'
+import PostSection from './Components/PostSection.jsx'
 import ChatSection from './Components/ChatSection.jsx'
 import EmailVerify from './Components/EmailVerify.jsx'
 import PasswordReset from './Components/PasswordReset.jsx'
@@ -17,7 +17,7 @@ function App() {
         <Route path='/email-verify' element={<EmailVerify />} />
         <Route path='/password-reset/:id/:token' element={<PasswordReset />} />
         <Route path='/chat-section' element={<ChatSection />} />
-        <Route path='/post' element={<Post />} />
+        <Route path='/post' element={<PostSection />} />
         {/* <Route path='/' element={localStorage.getItem('userAuthorizeToken')?<Homepage />:<Authentication />} /> */}
         <Route path='/' element={<Homepage />} />
       </Routes>

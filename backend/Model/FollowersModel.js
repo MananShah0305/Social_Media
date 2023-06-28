@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const postSchema = new mongoose.Schema({
+const followersSchema = new mongoose.Schema({
     postUploaded: String,
     creatorName: String,
     creatorProfilePic: {
@@ -20,9 +20,9 @@ const postSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    caption: String,
-}, { collection: 'post-data' })
+    caption: String
+}, { collection: 'followers-data' })
 
-const posts = mongoose.model('Posts', postSchema)
+const followers = mongoose.model('Followers', followersSchema)
 
 export default posts
