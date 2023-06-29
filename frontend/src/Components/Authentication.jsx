@@ -107,13 +107,13 @@ function Authentication(props) {
 
   const [alertStatus, setAlertStatus] = useState(false)
 
+  const [alert, setAlert] = useState(null)
+
   const [message, setMessage] = useState('')
 
   const [statusRegister, setStatusRegister] = useState('')
 
   const [statusLogin, setStatusLogin] = useState('')
-
-  const [alert, setAlert] = useState(null)
 
   const [profileModalShow, setProfileModalShow] = useState(false);
 
@@ -243,12 +243,14 @@ function Authentication(props) {
 
   const registerChange = (e) => {
     const reader = new FileReader();
+    if(e.target.files[0]){
+      reader.readAsDataURL(e.target.files[0])
+    }
     reader.onload = () => {
       if (reader.readyState == 2) {
         setProfilePic(reader.result)
       }
     }
-    reader.readAsDataURL(e.target.files[0])
   }
 
   const registerUser = () => {
@@ -290,7 +292,7 @@ function Authentication(props) {
       password: '',
     },
     onSubmit: () => {
-      axios.get('/login-credentials')
+      axios.get('/user-data')
         .then(res => {
           if (res.data.credentials.length == 0) {
             console.log('success')

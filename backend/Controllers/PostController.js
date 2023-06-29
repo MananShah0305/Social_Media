@@ -11,14 +11,15 @@ export const getPosts = async (req, res) => {
 }
 
 export const uploadPost = (req, res) => {
-    const post = req.body.post
-    const postInfo = {
-        caption: req.body.caption,
-        creator: req.body.creator
-    }
+    const postUploaded = req.body.post
+    const creatorName = req.body.username
+    const creatorProfilePic = req.body.profilePic
+    const caption = req.body.caption
+
     const postDetails = new postModel({
-        post, postInfo
+        postUploaded, creatorName, creatorProfilePic, caption
     })
+    
     postDetails.save()
 
     return res.status(200).json({ message: 'Post created successfully', status: 'success' })

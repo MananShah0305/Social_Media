@@ -149,7 +149,7 @@ function Homepage(props) {
                     maxHeight='88vh'
                 >
                     <Stack spacing={4} style={{ backgroundColor: '#e6e6e64f', width: '100vw', padding: '40px', overflowY: 'scroll', alignItems: 'center' }}>
-                        <Paper elevation={3} style={{ height: 'fit-content', width: '80%' }}>
+                        <Paper elevation={3} style={{ height: 'fit-content', width: '84%' }}>
                             <Stack direction='row'
                                 justifyContent='space-between'
                                 alignItems='center'
@@ -242,7 +242,8 @@ function Homepage(props) {
                                     </IconButton>
                                 </Tooltip>
                             </Stack>
-                            <p style={{ margin: '0px 16px ' }}><b>cric.manan </b>
+                            <p style={{ margin: '0px 16px ' }}><b>0 likes </b></p>
+                            <p style={{ margin: '2px 16px ' }}><b>cric.manan </b>
                                 Coffee is what helps me get through the day!!!!
                             </p>
                             <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={handleShowShowComments}>View all comments</Button>
@@ -277,7 +278,7 @@ function Homepage(props) {
                                 </Modal.Footer>
                             </Modal>
                         </Paper>
-                        <Paper elevation={3} style={{ height: 'fit-content', width: '80%' }}>
+                        <Paper elevation={3} style={{ height: 'fit-content', width: '84%' }}>
                             <Stack direction='row'
                                 justifyContent='space-between'
                                 alignItems='center'
@@ -370,7 +371,8 @@ function Homepage(props) {
                                     </IconButton>
                                 </Tooltip>
                             </Stack>
-                            <p style={{ margin: '0px 16px ' }}><b>shahdarshil1997 </b>   My favourite sport #Cricket</p>
+                            <p style={{ margin: '0px 16px ' }}><b>0 likes </b></p>
+                            <p style={{ margin: '2px 16px ' }}><b>shahdarshil1997 </b>   My favourite sport #Cricket</p>
                             <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={handleShowShowComments}>View all comments</Button>
                             <Modal
                                 size="lg"
@@ -404,18 +406,18 @@ function Homepage(props) {
                             </Modal>
                         </Paper>
                     </Stack>
-                    <Stack spacing={2} style={{ backgroundColor: '#e6e6e64f', padding: '30px', width: '100vw',  }}>
-                        <h1 className='profile'>Your Profile - cric.manan</h1>
-                        <Card style={{  fontSize: '18px', width:'90%', margin:'20px auto' }}>
+                    <Stack spacing={2} style={{ backgroundColor: '#e6e6e64f', padding: '30px', width: '100vw', }}>
+                        <h1 className='profile'>Your Profile - {user.username}</h1>
+                        <Card style={{ fontSize: '18px', width: '90%', margin: '20px auto' }}>
                             <Stack spacing={2}
-                            margin='40px'
+                                margin='40px'
                             >
                                 <Stack
                                     direction='row'
                                     justifyContent='space-around'
                                     alignItems='center'
                                 >
-                                    <Avatar sx={{ width: 100, height: 100 }} alt="Travis Howard" src="https://media.istockphoto.com/id/486121005/photo/sun-rays-inside-coconut-palms.jpg?b=1&s=170667a&w=0&k=20&c=RsE02692qNh7SapxtJ7CzuzsmBpuuOm25NRxUazCgcE=" />
+                                    <Avatar sx={{ width: 100, height: 100 }} alt="Travis Howard" src={user.profilePic} />
                                     <Stack spacing={1}
                                         alignItems='center'
                                     >
@@ -435,7 +437,7 @@ function Homepage(props) {
                                         <b style={{ margin: '0px' }}>Following</b>
                                     </Stack>
                                 </Stack>
-                            <p className='bio'>Whatever you do, do it with passion.</p>
+                                <p className='bio'>Whatever you do, do it with passion.</p>
                             </Stack>
                             <ImageList sx={{ width: '100%', height: 300 }} cols={4} rowHeight={164} gap='2px'>
                                 {itemData.map((item) => (
@@ -460,7 +462,7 @@ function Homepage(props) {
 const mapStateToProps = (state) => {
     return {
         username: state.username,
-        isLoggedIn: state.isLoggedIn
+        userProfilePic: state.profilePic
     }
 }
 

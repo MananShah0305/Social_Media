@@ -1,5 +1,5 @@
 import express from 'express'
-import { getCredentials,getUsername, signUp,signIn,validateUser,emailVerify,passwordChange } from '../Controllers/UserDataController.js'
+import { getCredentials, signUp,signIn,validateUser,emailVerify,passwordChange } from '../Controllers/UserDataController.js'
 import validator from 'express-validator';
 const { check } = validator;
 
@@ -7,9 +7,9 @@ import authenticate from '../Middlewares/authenticate.js'
 
 const router = express.Router()
 
-router.route('/login-credentials').get(getCredentials)
+router.route('/user-data/:id').post(getCredentials)
 
-router.route('/username').get(getUsername)
+// router.route('/username').get(getUsername)
 
 router.route('/sign-up').post(
     [

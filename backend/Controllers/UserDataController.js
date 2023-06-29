@@ -7,20 +7,15 @@ import nodemailer from "nodemailer"
 
 const secret_key = "meetup_pvt_ltd_tech_team"
 
-export const getCredentials = (req, res) => {
-    UserDataModel.find()
-        .then(result => {
-            res.send({
-                status: "success",
-                credentials: result
-            })
-        })
+export const getCredentials = async (req, res) => {
+    const userInfo = await UserDataModel.findOne({username:req.body.username})
+    res.status(200).json({ userInfo: userInfo })
 }
 
-export const getUsername = async (req, res) => {
-    const userInfo = await UserDataModel.find({}, { username: 1, profilePic: 1 })
-    res.status(200).json({ allUserInfo: userInfo })
-}
+// export const getUsername = async (req, res) => {
+//     const userInfo = await UserDataModel.find({}, { username: 1, profilePic: 1 })
+//     res.status(200).json({ allUserInfo: userInfo })
+// }
 
 export const signUp = async (req, res) => {
     const { email, username, password, profilePic, bio } = req.body

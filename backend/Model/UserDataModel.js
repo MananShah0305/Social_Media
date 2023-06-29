@@ -13,25 +13,34 @@ const userDataSchema = new mongoose.Schema({
         trim: true
     },
     password: String,
-    profilePic: String,
+    profilePic: {
+        type: String,
+        default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+    },
     bio: String,
     followers: {
-        type:Number,
-        default:0
+        count: {
+            type: Number,
+            default: 0
+        },
+        names: Array
     },
     following: {
-        type:Number,
-        default:0
+        count: {
+            type: Number,
+            default: 0
+        },
+        names: Array
     },
     totalPosts: {
-        type:Number,
-        default:0
+        type: Number,
+        default: 0
     },
     token: String,
-}, { collection: 'userData-data' })
+}, { collection: 'user-data' })
 
 //For the below method , use function() to define and not arrow function definition, else it will not work
-userDataSchema.methods.generateAuthToken = async function() {
+userDataSchema.methods.generateAuthToken = async function () {
     try {
         const tokenJWT = jwt.sign({ _id: this._id }, secret_key, {
             expiresIn: '1d'

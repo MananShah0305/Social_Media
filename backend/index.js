@@ -33,6 +33,7 @@ mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: tr
         })
     })
     .catch(err => console.log(err))
+    
 // app.get('/post', postRouter)
 // app.post('/post', postRouter) use the below instead of above
 
