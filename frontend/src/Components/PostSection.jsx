@@ -27,7 +27,7 @@ function Post(props) {
     const [alertStatus, setAlertStatus] = useState(false)
 
     useEffect(async () => {
-        const user = await axios.post(`/user-data/${sessionStorage.getItem('username')}`, { username:sessionStorage.getItem('username') })
+        const user = await axios.post(`/user-data/${sessionStorage.getItem('username')}`, { username: sessionStorage.getItem('username') })
         setUserInfo(user.data.userInfo)
     }, [])
 
@@ -89,7 +89,15 @@ function Post(props) {
                 alertStatus && alert
             }
             <Navbar username={props.username}></Navbar>
-            <Stack spacing={4} direction='column' justifyContent='space-between' alignItems='center' style={{ margin: '40px', height: '78vh', border: '0px' }}>
+            <Stack spacing={4} direction='column' justifyContent={postUploaded ? `space-between` : `flex-start`} alignItems='center' style={{ margin: '40px', height: '78vh', border: '0px' }}>
+                {
+                    !postUploaded &&
+                    <Stack spacing={2} direction='row' justifyContent='center' alignItems='center' style={{}}>
+                        <img src="https://media.tenor.com/nNWb0Icm0bUAAAAM/camera-emoji.gif" alt="img" height='70' width='70' />
+                        <h1 className='profile'>Create a post</h1>
+                        <img src="https://media.tenor.com/nNWb0Icm0bUAAAAM/camera-emoji.gif" alt="img" height='70' width='70' />
+                    </Stack>
+                }
                 <Form.Group controlId="formFile" style={{ width: '100%' }}>
                     <Form.Control type="file" onChange={handlePostUpload} />
                 </Form.Group>

@@ -1,6 +1,10 @@
 import mongoose from 'mongoose'
 
 const postSchema = new mongoose.Schema({
+    postUploaded: String,
+    creatorName: String,
+    creatorProfilePic: String,
+    caption: String,
     createdAt: {
         type: Date,
         default: new Date()
@@ -17,10 +21,6 @@ const postSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    postUploaded: String,
-    creatorName: String,
-    creatorProfilePic: String,
-    caption: String,
 }, { collection: 'post-data' })
 
 const posts = mongoose.model('Posts', postSchema)
