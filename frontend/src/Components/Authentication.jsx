@@ -34,8 +34,8 @@ import ButtonBootstrap from 'react-bootstrap/Button'; //custom name given by me
 import Tooltip from '@mui/material/Tooltip';
 import Cropper from 'react-easy-crop'
 import CropIcon from '@mui/icons-material/Crop';
-import { InputGroup, FormControl } from 'react-bootstrap';
 import getCroppedImg from '../cropImage'
+import { InputGroup, FormControl } from 'react-bootstrap';
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
@@ -124,11 +124,12 @@ function Authentication(props) {
   const [bio, setBio] = useState('I am a meetup user!')
 
   const [crop, setCrop] = useState({ x: 0, y: 0 })
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
+  const [cropImage, setCropImage] = useState(false)
+
   const [zoom, setZoom] = useState(1)
   const [aspect, setAspect] = useState(1)
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
 
-  const [cropImage, setCropImage] = useState(false)
 
   const onCropChange = (crop) => {
     setCrop(crop)
@@ -217,6 +218,7 @@ function Authentication(props) {
 
   const onConfirm = () => {
     setAlertStatus(false)
+    setAlert(null)
     setMessage("")
     setStatusRegister("")
     setStatusLogin("")
@@ -292,14 +294,14 @@ function Authentication(props) {
       password: '',
     },
     onSubmit: () => {
-      axios.get('/user-data')
+      axios.get('/all-user-data')
         .then(res => {
-          if (res.data.credentials.length == 0) {
+          if (res.data.allUserInfo.length == 0) {
             console.log('success')
             setProfileModalShow(true)
           }
           else {
-            res.data.credentials?.map(cred => {
+            res.data.allUserInfo?.map(cred => {
               if (cred.email == formik.values.email) {
                 setAlertStatus(true)
                 setMessage('This email is already registered')
@@ -344,7 +346,7 @@ function Authentication(props) {
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
-        localStorage.setItem('userAuthorizeToken',res.data.result.token)
+        sessionStorage.setItem('userAuthorizeToken',res.data.result.token)
       })
       .catch(err => {
         console.log(err);

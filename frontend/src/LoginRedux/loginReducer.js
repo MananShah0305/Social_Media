@@ -1,7 +1,7 @@
 import { LOGIN_USER } from './loginTypes.js'
 import { LOGOUT_USER } from './loginTypes.js'
 import { EMAIL_VERIFY } from './loginTypes.js'
-import { usernameLogin, isGoogleLogin } from '../Components/Authentication.jsx'
+import { usernameLogin } from '../Components/Authentication.jsx'
 import { emailVerify } from '../Components/EmailVerify.jsx'
 
 const initialState = {

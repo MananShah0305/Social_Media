@@ -18,7 +18,7 @@ function App() {
         <Route path='/password-reset/:id/:token' element={<PasswordReset />} />
         <Route path='/chat-section' element={<ChatSection />} />
         <Route path='/post' element={<PostSection />} />
-        {/* <Route path='/' element={localStorage.getItem('userAuthorizeToken')?<Homepage />:<Authentication />} /> */}
+        {/* <Route path='/' element={sessionStorage.getItem('userAuthorizeToken')?<Homepage />:<Authentication />} /> */}
         <Route path='/' element={<Homepage />} />
       </Routes>
     </Provider>

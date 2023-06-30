@@ -85,12 +85,14 @@ const itemData = [
 function Homepage(props) {
 
     const [user, setUser] = useState({})
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const [like, setLike] = useState(false);
     const [comment, setComment] = useState('');
     const [showAddComment, setShowAddComment] = useState(false);
-    const [showShowComments, setShowShowComments] = useState(false);
-    const [collapseChat, setCollapseChat] = React.useState(false);
+    const [showCommentsSection, setShowCommentsSection] = useState(false);
+    const [collapseChat, setCollapseChat] = useState(false);
+    const [allPosts, setAllPosts] = useState(null)
+    const [currentPostComments, setCurrentPostComments] = useState([])
 
     let navigate = useNavigate();
 
@@ -107,8 +109,17 @@ function Homepage(props) {
     const handleCloseAddComment = () => setShowAddComment(false);
     const handleShowAddComment = () => setShowAddComment(true);
 
-    const handleCloseShowComments = () => setShowShowComments(false);
-    const handleShowShowComments = () => setShowShowComments(true);
+    const handleCloseCommentsSection = () => setShowCommentsSection(false);
+    const handleShowCommentsSection = (e,id) => {
+        allPosts.map(post => {
+            if (post._id == id) {
+                console.log(post.comments)
+                setCurrentPostComments(post.comments)
+                return;
+            }
+        })
+        setShowCommentsSection(true)
+    }
 
     const commentChange = (e) => {
         setComment(e.target.value)
@@ -119,8 +130,14 @@ function Homepage(props) {
     }
 
     useEffect(() => {
+        if (sessionStorage.getItem('isLoggedIn') == false) {
+            navigate('/login')
+        }
+    }, [])
 
-        const token = localStorage.getItem('userAuthorizeToken')
+    useEffect(() => {
+
+        const token = sessionStorage.getItem('userAuthorizeToken')
 
         axios.get('/validate-user', {
             headers: {
@@ -136,6 +153,12 @@ function Homepage(props) {
 
     }, [])
 
+    useEffect(async () => {
+        const postInfo = await axios.get('/post')
+        // console.log(postInfo.data.posts)
+        setAllPosts(postInfo.data.posts)
+    }, [])
+
     return (
         <>
             <Navbar userInfo={user}></Navbar>
@@ -149,262 +172,155 @@ function Homepage(props) {
                     maxHeight='88vh'
                 >
                     <Stack spacing={4} style={{ backgroundColor: '#e6e6e64f', width: '100vw', padding: '40px', overflowY: 'scroll', alignItems: 'center' }}>
-                        <Paper elevation={3} style={{ height: 'fit-content', width: '84%' }}>
-                            <Stack direction='row'
-                                justifyContent='space-between'
-                                alignItems='center'
-                                spacing={2}
-                                style={{ padding: ' 14px 16px' }}>
-                                <Stack direction='row'
-                                    alignItems='center'
-                                    spacing={1}>
-                                    <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
-                                    <b>cric.manan</b>
-                                </Stack>
-                                <IconButton>
-                                    <MoreVertIcon
-                                        id="demo-positioned-button"
-                                        aria-controls={open ? 'demo-positioned-menu' : undefined}
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}
-                                        onClick={handleClick}
+                        {
+                            allPosts?.map((post) => {
+                                let idPost=post._id
+                                return (
+                                    <Paper elevation={3} style={{ height: 'fit-content', width: '84%' }}>
+                                        <Stack direction='row'
+                                            justifyContent='space-between'
+                                            alignItems='center'
+                                            spacing={2}
+                                            style={{ padding: ' 14px 16px' }}>
+                                            <Stack direction='row'
+                                                alignItems='center'
+                                                spacing={1}>
+                                                <Avatar src={post.creatorProfilePic} />
+                                                <b>{post.creatorName}</b>
+                                            </Stack>
+                                            <IconButton>
+                                                <MoreVertIcon
+                                                    id="demo-positioned-button"
+                                                    aria-controls={open ? 'demo-positioned-menu' : undefined}
+                                                    aria-haspopup="true"
+                                                    aria-expanded={open ? 'true' : undefined}
+                                                    onClick={handleClick}
+                                                />
+                                            </IconButton>
+                                            <Menu
+                                                id="demo-positioned-menu"
+                                                aria-labelledby="demo-positioned-button"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                anchorOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                            >
+                                                <MenuItem onClick={handleClose}>Report Post</MenuItem>
+                                                <MenuItem onClick={handleClose}>Hide Post</MenuItem>
+                                                <MenuItem onClick={handleClose}>Block User</MenuItem>
+                                                <MenuItem onClick={handleClose}>Copy post link</MenuItem>
+                                            </Menu>
+                                        </Stack>
+                                        <img src={post.postUploaded} alt="Post" style={{ aspectRatio: '1.5' }} width='100%' />
+                                        <Stack direction='row'
+                                            alignItems='center'
+                                            spacing={0}
+                                            style={{ margin: '4px 8px 0px 8px' }}>
+                                            <Tooltip title="Like">
+                                                <IconButton onClick={handleLike}>
+                                                    {
+                                                        like ?
+                                                            <FavoriteIcon style={{ fontSize: '27px', color: 'red' }} />
+                                                            :
+                                                            <FavoriteBorderIcon style={{ fontSize: '27px' }} />
+                                                    }
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Comment">
+                                                <IconButton onClick={handleShowAddComment}>
+                                                    <CommentOutlinedIcon style={{ fontSize: '25px' }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Share">
+                                                <IconButton>
+                                                    <ShareOutlinedIcon fontSize='medium' />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Stack>
+                                        <p style={{ margin: '0px 16px ' }}><b>{post.likes} likes </b></p>
+                                        <p style={{ margin: '2px 16px ' }}><b>{post.creatorName} </b>
+                                            {post.caption}
+                                        </p>
+                                        <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={e=>handleShowCommentsSection(e,idPost)}>View all comments</Button>
+                                    </Paper>
+                                )
+                            })
+                        }
+
+                        {/* Add comment Modal */}
+                        <Modal
+                            aria-labelledby="contained-modal-title-vcenter"
+                            centered
+                            show={showAddComment}
+                            onHide={handleCloseAddComment}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Comment on this post</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <InputGroup className="mb-3">
+                                    <Form.Control
+                                        as="textarea"
+                                        placeholder="Add a comment..."
+                                        value={comment}
+                                        onChange={commentChange}
+                                        aria-label="Comment"
+                                        aria-describedby="basic-addon1"
+                                        style={{ paddingTop: '1vh' }}
                                     />
-                                </IconButton>
-                                <Menu
-                                    id="demo-positioned-menu"
-                                    aria-labelledby="demo-positioned-button"
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleClose}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                >
-                                    <MenuItem onClick={handleClose}>Report Post</MenuItem>
-                                    <MenuItem onClick={handleClose}>Hide Post</MenuItem>
-                                    <MenuItem onClick={handleClose}>Block User</MenuItem>
-                                    <MenuItem onClick={handleClose}>Copy post link</MenuItem>
-                                </Menu>
-                            </Stack>
-                            <img src="https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c?w=164&h=164&fit=crop&auto=format" alt="Post" style={{ aspectRatio: '1.5' }} width='100%' />
-                            <Stack direction='row'
-                                alignItems='center'
-                                spacing={0}
-                                style={{ margin: '4px 8px 0px 8px' }}>
-                                <Tooltip title="Like">
-                                    <IconButton onClick={handleLike}>
-                                        {
-                                            like ?
-                                                <FavoriteIcon style={{ fontSize: '27px', color: 'red' }} />
-                                                :
-                                                <FavoriteBorderIcon style={{ fontSize: '27px' }} />
-                                        }
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Comment">
-                                    <IconButton onClick={handleShowAddComment}>
-                                        <CommentOutlinedIcon style={{ fontSize: '25px' }} />
-                                    </IconButton>
-                                </Tooltip>
-                                <Modal
-                                    aria-labelledby="contained-modal-title-vcenter"
-                                    centered
-                                    show={showAddComment}
-                                    onHide={handleCloseAddComment}>
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Comment on this post</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        <InputGroup className="mb-3">
-                                            <Form.Control
-                                                as="textarea"
-                                                placeholder="Add a comment..."
-                                                value={comment}
-                                                onChange={commentChange}
-                                                aria-label="Comment"
-                                                aria-describedby="basic-addon1"
-                                                style={{ paddingTop: '1vh' }}
-                                            />
-                                        </InputGroup>
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <ButtonBootstrap onClick={handleCloseAddComment}>Close</ButtonBootstrap>
-                                    </Modal.Footer>
-                                </Modal>
-                                <Tooltip title="Share">
-                                    <IconButton>
-                                        <ShareOutlinedIcon fontSize='medium' />
-                                    </IconButton>
-                                </Tooltip>
-                            </Stack>
-                            <p style={{ margin: '0px 16px ' }}><b>0 likes </b></p>
-                            <p style={{ margin: '2px 16px ' }}><b>cric.manan </b>
-                                Coffee is what helps me get through the day!!!!
-                            </p>
-                            <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={handleShowShowComments}>View all comments</Button>
-                            <Modal
-                                size="lg"
-                                aria-labelledby="contained-modal-title-vcenter"
-                                centered
-                                scrollable
-                                show={showShowComments}
-                                onHide={handleCloseShowComments}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Comments</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <Stack spacing={2}>
-                                        <Stack direction='row'
-                                            alignItems='center'
-                                            spacing={2}>
-                                            <Avatar sx={{ bgcolor: deepPurple[500] }}>D</Avatar>
-                                            <p>Wow, nice capture &#128525;</p>
-                                        </Stack>
-                                        <Stack direction='row'
-                                            alignItems='center'
-                                            spacing={2}>
-                                            <Avatar sx={{ bgcolor: blueGrey[500] }}>J</Avatar>
-                                            <p>Best photographer in the world!! what a capture.&#128293;</p>
-                                        </Stack>
-                                    </Stack>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <ButtonBootstrap onClick={handleCloseShowComments}>Close</ButtonBootstrap>
-                                </Modal.Footer>
-                            </Modal>
-                        </Paper>
-                        <Paper elevation={3} style={{ height: 'fit-content', width: '84%' }}>
-                            <Stack direction='row'
-                                justifyContent='space-between'
-                                alignItems='center'
-                                spacing={2}
-                                style={{ padding: ' 14px 16px' }}>
-                                <Stack direction='row'
-                                    alignItems='center'
-                                    spacing={1}>
-                                    <Avatar sx={{ bgcolor: deepPurple[500] }}>D</Avatar>
-                                    <b>shahdarshil1997</b>
+                                </InputGroup>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <ButtonBootstrap onClick={handleCloseAddComment}>Close</ButtonBootstrap>
+                            </Modal.Footer>
+                        </Modal>
+
+                        {/* Show comments Modal */}
+                        <Modal
+                            size="lg"
+                            aria-labelledby="contained-modal-title-vcenter"
+                            centered
+                            scrollable
+                            show={showCommentsSection}
+                            onHide={handleCloseCommentsSection}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Comments</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Stack spacing={2}>
+                                    {
+                                        currentPostComments.map(comment => {
+                                            return (
+                                                <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                                                    <Stack direction='row'
+                                                        alignItems='center'
+                                                        spacing={2}
+                                                        width='60%'>
+
+                                                        <Avatar src={comment.commProfilePic} />
+                                                        <Stack justifyContent='center'>
+                                                            <b>{comment.commCreator}</b>
+                                                            <p style={{margin:'0px'}}>{comment.body}</p>
+                                                        </Stack>
+                                                    </Stack>
+                                                    <p style={{ color: 'grey', fontSize: '12px',margin:'0px' }}>{comment.date}</p>
+                                                </Stack>
+                                            )
+                                        })
+                                    }
                                 </Stack>
-                                <IconButton>
-                                    <MoreVertIcon
-                                        id="demo-positioned-button"
-                                        aria-controls={open ? 'demo-positioned-menu' : undefined}
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}
-                                        onClick={handleClick}
-                                    />
-                                </IconButton>
-                                <Menu
-                                    id="demo-positioned-menu"
-                                    aria-labelledby="demo-positioned-button"
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleClose}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                >
-                                    <MenuItem onClick={handleClose}>Report Post</MenuItem>
-                                    <MenuItem onClick={handleClose}>Hide Post</MenuItem>
-                                    <MenuItem onClick={handleClose}>Block User</MenuItem>
-                                    <MenuItem onClick={handleClose}>Copy post link</MenuItem>
-                                </Menu>
-                            </Stack>
-                            <img src="https://thumbs.dreamstime.com/b/cricket-bat-ball-26560801.jpg" alt="Post" style={{ aspectRatio: '1.5' }} width='100%' />
-                            <Stack direction='row'
-                                alignItems='center'
-                                spacing={0}
-                                style={{ margin: '4px 8px 0px 8px' }}>
-                                <Tooltip title="Like">
-                                    <IconButton onClick={handleLike}>
-                                        {
-                                            like ?
-                                                <FavoriteIcon style={{ fontSize: '27px', color: 'red' }} />
-                                                :
-                                                <FavoriteBorderIcon style={{ fontSize: '27px' }} />
-                                        }
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Comment">
-                                    <IconButton onClick={handleShowAddComment}>
-                                        <CommentOutlinedIcon style={{ fontSize: '25px' }} />
-                                    </IconButton>
-                                </Tooltip>
-                                <Modal
-                                    aria-labelledby="contained-modal-title-vcenter"
-                                    centered
-                                    show={showAddComment}
-                                    onHide={handleCloseAddComment}>
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Comment on this post</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-                                        <InputGroup className="mb-3">
-                                            <Form.Control
-                                                as="textarea"
-                                                placeholder="Add a comment..."
-                                                value={comment}
-                                                onChange={commentChange}
-                                                aria-label="Comment"
-                                                aria-describedby="basic-addon1"
-                                                style={{ paddingTop: '1vh' }}
-                                            />
-                                        </InputGroup>
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <ButtonBootstrap onClick={handleCloseAddComment}>Close</ButtonBootstrap>
-                                    </Modal.Footer>
-                                </Modal>
-                                <Tooltip title="Share">
-                                    <IconButton>
-                                        <ShareOutlinedIcon fontSize='medium' />
-                                    </IconButton>
-                                </Tooltip>
-                            </Stack>
-                            <p style={{ margin: '0px 16px ' }}><b>0 likes </b></p>
-                            <p style={{ margin: '2px 16px ' }}><b>shahdarshil1997 </b>   My favourite sport #Cricket</p>
-                            <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={handleShowShowComments}>View all comments</Button>
-                            <Modal
-                                size="lg"
-                                aria-labelledby="contained-modal-title-vcenter"
-                                centered
-                                scrollable
-                                show={showShowComments}
-                                onHide={handleCloseShowComments}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Comments</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <Stack spacing={2}>
-                                        <Stack direction='row'
-                                            alignItems='center'
-                                            spacing={2}>
-                                            <Avatar sx={{ bgcolor: deepOrange[500] }}>M</Avatar>
-                                            <p>I agree, the best sport to ever have been played &#128525;</p>
-                                        </Stack>
-                                        <Stack direction='row'
-                                            alignItems='center'
-                                            spacing={2}>
-                                            <Avatar sx={{ bgcolor: blueGrey[500] }}>J</Avatar>
-                                            <p>2nd best photographer in the world, after cric.manan &#128293;</p>
-                                        </Stack>
-                                    </Stack>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <ButtonBootstrap onClick={handleCloseShowComments}>Close</ButtonBootstrap>
-                                </Modal.Footer>
-                            </Modal>
-                        </Paper>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <ButtonBootstrap onClick={handleCloseCommentsSection}>Close</ButtonBootstrap>
+                            </Modal.Footer>
+                        </Modal>
+
                     </Stack>
                     <Stack spacing={2} style={{ backgroundColor: '#e6e6e64f', padding: '30px', width: '100vw', }}>
                         <h1 className='profile'>Your Profile - {user.username}</h1>
@@ -437,7 +353,7 @@ function Homepage(props) {
                                         <b style={{ margin: '0px' }}>Following</b>
                                     </Stack>
                                 </Stack>
-                                <p className='bio'>Whatever you do, do it with passion.</p>
+                                <p className='bio'>{user.bio}</p>
                             </Stack>
                             <ImageList sx={{ width: '100%', height: 300 }} cols={4} rowHeight={164} gap='2px'>
                                 {itemData.map((item) => (
@@ -454,7 +370,7 @@ function Homepage(props) {
                         </Card>
                     </Stack>
                 </Stack>
-            </Container>
+            </Container >
         </>
     )
 }
@@ -462,7 +378,8 @@ function Homepage(props) {
 const mapStateToProps = (state) => {
     return {
         username: state.username,
-        userProfilePic: state.profilePic
+        userProfilePic: state.profilePic,
+        isLoggedIn: state.isLoggedIn
     }
 }
 

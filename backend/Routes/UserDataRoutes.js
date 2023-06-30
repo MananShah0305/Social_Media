@@ -1,11 +1,13 @@
 import express from 'express'
-import { getCredentials, signUp,signIn,validateUser,emailVerify,passwordChange } from '../Controllers/UserDataController.js'
+import { getAllUserData, getCredentials, signUp, signIn, validateUser, emailVerify, passwordChange } from '../Controllers/UserDataController.js'
 import validator from 'express-validator';
 const { check } = validator;
 
 import authenticate from '../Middlewares/authenticate.js'
 
 const router = express.Router()
+
+router.route('/all-user-data').get(getAllUserData)
 
 router.route('/user-data/:id').post(getCredentials)
 
@@ -20,7 +22,7 @@ router.route('/sign-up').post(
 
 router.route('/sign-in').post(signIn)
 
-router.get('/validate-user',authenticate,validateUser)
+router.get('/validate-user', authenticate, validateUser)
 
 router.route('/email-verify').post(emailVerify)
 

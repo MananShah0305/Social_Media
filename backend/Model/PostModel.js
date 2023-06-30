@@ -14,8 +14,22 @@ const postSchema = new mongoose.Schema({
         default: 0
     },
     comments: [{
-        body: String,
-        date: Date
+        commCreator: {
+            type: String,
+            default: "Manan"
+        },
+        commProfilePic: {
+            type: String,
+            default: "https://www.shutterstock.com/image-photo/view-mumbai-showing-bandra-worli-260nw-1493970836.jpg"
+        },
+        body: {
+            type: String,
+            default: "What a beautiful pic"
+        },
+        date: {
+            type: Date,
+            default: new Date()
+        }
     }],
     saved: {
         type: Boolean,

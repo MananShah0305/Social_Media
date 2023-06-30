@@ -21,6 +21,7 @@
 .profile {
   margin: 0px auto;
   font-family: "Oleo Script Swash Caps", cursive;
+  text-shadow: 2px 2px 4px #454545;
 }
 
 .bio{

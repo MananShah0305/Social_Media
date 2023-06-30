@@ -52,7 +52,7 @@ function PasswordReset(props) {
 
     useEffect(() => {
 
-        const token=localStorage.getItem('userAuthorizeToken')
+        const token=sessionStorage.getItem('userAuthorizeToken')
         
         axios.get('/validate-user', {
             headers: {

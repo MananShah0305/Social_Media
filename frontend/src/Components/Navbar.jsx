@@ -70,7 +70,7 @@ function Navbar(props) {
 
     const logoutSite = () => {
         // props.logoutUser()
-        localStorage.removeItem('userAuthorizeToken')
+        sessionStorage.removeItem('userAuthorizeToken')
         navigate('/login')
     }
 

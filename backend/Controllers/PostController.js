@@ -1,13 +1,8 @@
 import postModel from '../Model/PostModel.js'
 
 export const getPosts = async (req, res) => {
-    await postModel.find()
-        .then(result => {
-            res.send({
-                status: 'success',
-                posts: result
-            })
-        })
+    const result = await postModel.find()
+    res.status(200).json({ status: 'success', posts: result })
 }
 
 export const uploadPost = (req, res) => {
@@ -15,19 +10,7 @@ export const uploadPost = (req, res) => {
     const creatorName = req.body.creatorName
     const creatorProfilePic = req.body.creatorProfilePic
     const caption = req.body.caption
-    const createdAt = req.body.createdAt
-    const likes = req.body.likes
-    const comments = req.body.comments
-    const saved = req.body.saved
 
-    // console.log(postUploaded)
-    // console.log(creatorName)
-    // console.log(creatorProfilePic)
-    // console.log(caption)
-    // console.log(createdAt)
-    // console.log(likes)
-    // console.log(comments)
-    // console.log(saved)
     const postDetails = new postModel({
         postUploaded, creatorName, creatorProfilePic, caption
     })
