@@ -1,7 +1,7 @@
 import chatsModel from '../Model/ChatModel.js'
 
 export const getChats = async (req, res) => {
-    const result = await chatsModel.findOne({ name: req.body.name })
+    const result = await chatsModel.findOne({ name: req.body.username })
     try {
         return res.status('200').json({ status: 'success', chatInfo: result })
     }
@@ -11,10 +11,10 @@ export const getChats = async (req, res) => {
 }
 
 export const addFriend = async (req, res) => {
-    const existingUser = await chatsModel.findOne({ name: req.body.name })
+    const existingUser = await chatsModel.findOne({ name: req.body.username })
     const friendAdd = { name: req.body.friendName, chats: [] }
 
-    chatsModel.updateOne({ name: existingUser.name }, {
+    chatsModel.updateOne({ name: existingUser.username }, {
         $push: {
             friends: friendAdd
         }

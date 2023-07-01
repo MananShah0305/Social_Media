@@ -130,7 +130,7 @@ function Homepage(props) {
     }
 
     useEffect(() => {
-        if (sessionStorage.getItem('isLoggedIn') == false) {
+        if (!sessionStorage.getItem('isLoggedIn')) {
             navigate('/login')
         }
     }, [])

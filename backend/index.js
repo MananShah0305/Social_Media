@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import postRouter from './Routes/PostsRoutes.js'
 import userDataRouter from './Routes/UserDataRoutes.js'
+import basicInfoRouter from './Routes/BasicInfoRoutes.js'
 import chatRouter from './Routes/ChatRoutes.js'
 import multer from 'multer'
 import dotenv from 'dotenv'
@@ -40,3 +41,4 @@ mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: tr
 app.use('/post', postRouter) //Here '/post' is mentioned,so in routes, only mention '/'
 app.use('/', userDataRouter) 
 app.use('/chats', chatRouter) 
+app.use('/basicinfo', basicInfoRouter) 

@@ -17,7 +17,6 @@ export const getCredentials = async (req, res) => {
     res.status(200).json({ userInfo: userInfo })
 }
 
-
 export const signUp = async (req, res) => {
     const { email, username, password, profilePic, bio } = req.body
     const errors = validationResult(req);

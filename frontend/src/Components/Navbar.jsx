@@ -24,6 +24,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/material/styles';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { InputGroup, FormControl } from 'react-bootstrap';
+import Stack from '@mui/material/Stack';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Tooltip from '@mui/material/Tooltip';
 import axios from '../axios.js'
@@ -31,20 +32,31 @@ import { connect } from 'react-redux'
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { logoutUser } from '../LoginRedux/loginActions.js'
 import CircularProgress from '@mui/material/CircularProgress';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Card from '@mui/material/Card';
 
 function Navbar(props) {
 
     let navigate = useNavigate();
     const [state, setState] = useState({ right: false });
     const [userInfo, setUserInfo] = useState()
-    // const [addFriend, setAddFriend] = useState('')
+    const [allUsers, setAllUsers] = useState(null)
+    const [friendInfo, setFriendInfo] = useState(null)
+    const [friend, setFriend] = useState(null)
 
     let location = useLocation();
 
     useEffect(async () => {
-        const user = await axios.post(`/user-data/${sessionStorage.getItem('username')}`, { username:sessionStorage.getItem('username') })
+        const user = await axios.post(`/user-data/${sessionStorage.getItem('username')}`, { username: sessionStorage.getItem('username') })
         setUserInfo(user.data.userInfo)
-    },[])
+    }, [])
+
+    useEffect(async () => {
+        const users = await axios.get('/basicinfo')
+        setAllUsers(users.data.allUserBasicInfo)
+    }, [])
 
     const toggleDrawer = (anchor, open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -74,14 +86,9 @@ function Navbar(props) {
         navigate('/login')
     }
 
-    const addFriendFunc = () => {
-        axios.post('/chats/add-friend', { name: 'cric.manan', friendname: 'dashy1997' })
-            .then(() => {
-                console.log('success')
-            })
-            .catch(err => {
-                console.log(err)
-            })
+    const addFriendFunc = async (friend) => {
+        const user = await axios.post(`/user-data/${friend}`, { username: friend })
+        setFriendInfo(user.data.userInfo)
     }
 
     return (
@@ -97,9 +104,9 @@ function Navbar(props) {
                                     ?
                                     <img src={userInfo.profilePic} alt="Profile Pic" width='50' height='50' style={{ borderRadius: '40px' }} />
                                     :
-                                    <Avatar sx={{ bgcolor: '#0070ff', color: 'white' }}>{userInfo?.username?.charAt(0)}</Avatar>
+                                    <Avatar sx={{ bgcolor: '#0070ff', color: 'white' }}>{userInfo.username?.charAt(0)}</Avatar>
                             }
-                            <h5 style={{ margin: '0px', marginLeft: '8px' }}>{userInfo.username}</h5>
+                            <h5 style={{ margin: '0px', marginLeft: '8px', color: 'white' }}>{userInfo.username}</h5>
                         </div>
                     }
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: '0.1' }}>
@@ -109,34 +116,34 @@ function Navbar(props) {
                         <Tooltip title="Home" placement="bottom">
                             <Link to="/">
                                 <IconButton>
-                                    <HomeOutlinedIcon style={{ fontSize: '30px', color: '#4181f6' }}></HomeOutlinedIcon>
+                                    <HomeOutlinedIcon style={{ fontSize: '30px', color: 'white', backgroundColor: '#4181f6' }}></HomeOutlinedIcon>
                                 </IconButton>
                             </Link>
                         </Tooltip>
                         <Tooltip title="New Post" placement="bottom">
                             <Link to="/post">
                                 <IconButton>
-                                    <InsertPhotoOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></InsertPhotoOutlinedIcon>
+                                    <InsertPhotoOutlinedIcon style={{ fontSize: '26px', color: 'white', backgroundColor: '#4181f6' }}></InsertPhotoOutlinedIcon>
                                 </IconButton>
                             </Link>
                         </Tooltip>
                         <Tooltip title="Chats" placement="bottom">
                             <Link to="/chat-section">
                                 <IconButton>
-                                    <MapsUgcOutlinedIcon style={{ fontSize: '26px', color: '#4181f6' }}></MapsUgcOutlinedIcon>
+                                    <MapsUgcOutlinedIcon style={{ fontSize: '26px', color: 'white', backgroundColor: '#4181f6' }}></MapsUgcOutlinedIcon>
                                 </IconButton>
                             </Link>
                         </Tooltip>
                         <Tooltip title="Logout" placement="bottom">
                             <Link to="/login">
                                 <IconButton onClick={logoutSite}>
-                                    <LogoutIcon style={{ fontSize: '26px', color: '#4181f6' }}></LogoutIcon>
+                                    <LogoutIcon style={{ fontSize: '26px', color: 'white', backgroundColor: '#4181f6' }}></LogoutIcon>
                                 </IconButton>
                             </Link>
                         </Tooltip>
                         {['right'].map((anchor) => (
                             <React.Fragment key={anchor}>
-                                <Button onClick={toggleDrawer(anchor, true)} style={{ display: 'flex', backgroundColor: '#4181f6', padding: '10px', width: '160px', color: 'white' }}>
+                                <Button onClick={toggleDrawer(anchor, true)} style={{ display: 'flex', padding: '10px', width: '160px', color: 'white', backgroundColor: '#4181f6' }}>
                                     <div style={{ display: 'flex' }}>
                                         <SavedSearchIcon style={{ fontSize: '26px' }} />
                                         <p style={{ margin: '0px' }}>Find Friends</p>
@@ -147,38 +154,68 @@ function Navbar(props) {
                                     open={state[anchor]}
                                     onClose={toggleDrawer(anchor, false)}
                                 >
-                                    <DrawerHeader style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#bbdcfe', width: '30vw' }}>
+                                    <Stack direction='row' justifyContent='flex-start' alignItems='center' spacing={4} style={{ backgroundColor: '#bbdcfe', width: '30vw', padding: '18px' }}>
                                         <IconButton onClick={handleDrawerClose} style={{ backgroundColor: 'rgb(65, 129, 246)', color: 'white' }}>
                                             <ChevronRightIcon />
                                         </IconButton>
-                                        <Box style={{ borderRadius: '20px', display: 'flex', alignItems: 'flex-end', flex: '0.94', justifyContent: 'center', backgroundColor: 'white' }}>
-                                            <InputGroup style={{ height: '50px ' }}>
-                                                <FormControl
-                                                    placeholder="Search for users..."
-                                                    aria-label="friends"
-                                                    aria-describedby="basic-addon1"
-                                                    style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px' }}
-                                                />
-                                                <InputGroup.Text id="basic-addon1" style={{ height: '50px', backgroundColor: 'rgb(65, 129, 246)', cursor: 'pointer', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}><SearchIcon style={{ color: 'white' }}></SearchIcon></InputGroup.Text>
-                                            </InputGroup>
-                                        </Box>
-                                    </DrawerHeader>
-                                    <List >
-                                        <ListItem onClick={addFriendFunc}
-                                            secondaryAction={
-                                                <IconButton>
-                                                    <GroupAddIcon style={{ color: '#4181f6' }}></GroupAddIcon>
-                                                </IconButton>
-                                            }
-                                        >
-                                            <ListItemAvatar>
-                                                <Avatar sx={{ bgcolor: orange[500] }}>D</Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                                primary="dashy1997"
-                                            />
-                                        </ListItem>
-                                    </List>
+                                        <Autocomplete
+                                            id="free-solo-demo"
+                                            freeSolo
+                                            options={allUsers}
+                                            autoHighlight
+                                            onChange={(e, value) => addFriendFunc(value.username)}
+                                            getOptionLabel={(option) => option.username}
+                                            renderOption={(props, option) => (
+                                                <Stack direction='row' spacing={1} alignItems='center' padding='10px' {...props}>
+                                                    <Avatar
+                                                        loading="lazy"
+                                                        width="30"
+                                                        src={option.profilePic}
+                                                        alt=""
+                                                    />
+                                                    <span>{option.username}</span>
+                                                </Stack>
+                                            )}
+                                            renderInput={(params) => <TextField {...params} label='Search for a friend' style={{ width: '22vw' }} />}
+                                        />
+                                    </Stack>
+                                    {
+                                        friendInfo &&
+                                        <Card style={{ fontSize: '18px', width: '90%', margin: '20px auto' }}>
+                                            <Stack spacing={2}
+                                                margin='20px'
+                                                padding='20px'
+                                            >
+                                                <Avatar sx={{ width: 140, height: 140, margin: 'auto' }} alt="Travis Howard" src={friendInfo?.profilePic} />
+                                                <p style={{backgroundColor:'rgb(220,220,220)', margin:'30px auto', padding:'6px 10px',borderRadius:'8px'}}>{friendInfo.username}</p>
+                                                <Stack
+                                                    direction='row'
+                                                    justifyContent='space-between'
+                                                    alignItems='center'
+                                                >
+                                                    <Stack spacing={1}
+                                                        alignItems='center'
+                                                    >
+                                                        <b>20</b>
+                                                        <b style={{ margin: '0px' }}>Posts</b>
+                                                    </Stack>
+                                                    <Stack spacing={1}
+                                                        alignItems='center'
+                                                    >
+                                                        <b>1264</b>
+                                                        <b style={{ margin: '0px' }}>Followers</b>
+                                                    </Stack>
+                                                    <Stack spacing={1}
+                                                        alignItems='center'
+                                                    >
+                                                        <b>822</b>
+                                                        <b style={{ margin: '0px' }}>Following</b>
+                                                    </Stack>
+                                                </Stack>
+                                                <p className='bio'>{friendInfo?.bio}</p>
+                                            </Stack>
+                                        </Card>
+                                    }
                                 </Drawer>
                             </React.Fragment>
                         ))}
