@@ -27,9 +27,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
-
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import SearchIcon from '@mui/icons-material/Search';
+
+import '../Styles/Posts.css'
 
 const itemData = [
     {
@@ -92,6 +93,9 @@ function Homepage(props) {
     const [showCommentsSection, setShowCommentsSection] = useState(false);
     const [collapseChat, setCollapseChat] = useState(false);
     const [allPosts, setAllPosts] = useState(null)
+    const [userPosts, setUserPosts] = useState(null)
+    const [showPostModal, setShowPostModal] = useState(false);
+    const [modalPost, setModalPost] = useState(null);
     const [currentPostComments, setCurrentPostComments] = useState([])
 
     let navigate = useNavigate();
@@ -110,7 +114,7 @@ function Homepage(props) {
     const handleShowAddComment = () => setShowAddComment(true);
 
     const handleCloseCommentsSection = () => setShowCommentsSection(false);
-    const handleShowCommentsSection = (e,id) => {
+    const handleShowCommentsSection = (id) => {
         allPosts.map(post => {
             if (post._id == id) {
                 console.log(post.comments)
@@ -123,10 +127,6 @@ function Homepage(props) {
 
     const commentChange = (e) => {
         setComment(e.target.value)
-    }
-
-    const collapseChatHandler = () => {
-        setCollapseChat(!collapseChat)
     }
 
     useEffect(() => {
@@ -159,6 +159,17 @@ function Homepage(props) {
         setAllPosts(postInfo.data.posts)
     }, [])
 
+    useEffect(async () => {
+        const postInfo = await axios.post(`/post/userpost/${sessionStorage.getItem('username')}`,{creatorName:sessionStorage.getItem('username')})
+        // console.log(postInfo.data)
+        setUserPosts(postInfo.data.posts)
+    }, [])
+
+    const postModalAssign = (post) => {
+        setModalPost(post)
+        setShowPostModal(true)
+    }
+
     return (
         <>
             <Navbar userInfo={user}></Navbar>
@@ -174,7 +185,7 @@ function Homepage(props) {
                     <Stack spacing={4} style={{ backgroundColor: '#e6e6e64f', width: '100vw', padding: '40px', overflowY: 'scroll', alignItems: 'center' }}>
                         {
                             allPosts?.map((post) => {
-                                let idPost=post._id
+                                let idPost = post._id
                                 return (
                                     <Paper elevation={3} style={{ height: 'fit-content', width: '84%' }}>
                                         <Stack direction='row'
@@ -248,7 +259,7 @@ function Homepage(props) {
                                         <p style={{ margin: '2px 16px ' }}><b>{post.creatorName} </b>
                                             {post.caption}
                                         </p>
-                                        <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={e=>handleShowCommentsSection(e,idPost)}>View all comments</Button>
+                                        <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={() => handleShowCommentsSection(idPost)}>View all comments</Button>
                                     </Paper>
                                 )
                             })
@@ -295,29 +306,87 @@ function Homepage(props) {
                             <Modal.Body>
                                 <Stack spacing={2}>
                                     {
-                                        currentPostComments.map(comment => {
-                                            return (
-                                                <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                                                    <Stack direction='row'
-                                                        alignItems='center'
-                                                        spacing={2}
-                                                        width='60%'>
+                                        currentPostComments.length != 0 ?
+                                            currentPostComments.map(comment => {
+                                                return (
+                                                    <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                                                        <Stack direction='row'
+                                                            alignItems='center'
+                                                            spacing={2}
+                                                            width='60%'>
 
-                                                        <Avatar src={comment.commProfilePic} />
-                                                        <Stack justifyContent='center'>
-                                                            <b>{comment.commCreator}</b>
-                                                            <p style={{margin:'0px'}}>{comment.body}</p>
+                                                            <Avatar src={comment.commProfilePic} />
+                                                            <Stack justifyContent='center'>
+                                                                <b>{comment.commCreator}</b>
+                                                                <p style={{ margin: '0px' }}>{comment.body}</p>
+                                                            </Stack>
                                                         </Stack>
+                                                        <p style={{ color: 'grey', fontSize: '12px', margin: '0px' }}>{comment.date}</p>
                                                     </Stack>
-                                                    <p style={{ color: 'grey', fontSize: '12px',margin:'0px' }}>{comment.date}</p>
-                                                </Stack>
-                                            )
-                                        })
+                                                )
+                                            })
+                                            :
+                                            <i style={{ fontSize: '32px' }}>No comments</i>
                                     }
                                 </Stack>
                             </Modal.Body>
                             <Modal.Footer>
                                 <ButtonBootstrap onClick={handleCloseCommentsSection}>Close</ButtonBootstrap>
+                            </Modal.Footer>
+                        </Modal>
+
+                        <Modal
+                            size="md"
+                            aria-labelledby="contained-modal-title-vcenter"
+                            centered
+                            scrollable
+                            show={showPostModal}
+                            onHide={() => setShowPostModal(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>
+                                    <Stack direction='row'
+                                        alignItems='center'
+                                        spacing={1}>
+                                        <Avatar src={modalPost?.creatorProfilePic} />
+                                        <b>{modalPost?.creatorName}</b>
+                                    </Stack>
+                                </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body style={{ padding: '0px' }}>
+                                <img src={modalPost?.postUploaded} alt="Post" style={{ aspectRatio: '1.5' }} width='100%' />
+                                <Stack direction='row'
+                                    alignItems='center'
+                                    spacing={0}
+                                    style={{ margin: '4px 8px 0px 8px' }}>
+                                    <Tooltip title="Like">
+                                        <IconButton onClick={handleLike}>
+                                            {
+                                                like ?
+                                                    <FavoriteIcon style={{ fontSize: '27px', color: 'red' }} />
+                                                    :
+                                                    <FavoriteBorderIcon style={{ fontSize: '27px' }} />
+                                            }
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Comment">
+                                        <IconButton onClick={handleShowAddComment}>
+                                            <CommentOutlinedIcon style={{ fontSize: '25px' }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Share">
+                                        <IconButton>
+                                            <ShareOutlinedIcon fontSize='medium' />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Stack>
+                                <p style={{ margin: '0px 16px ' }}><b>{modalPost?.likes} likes </b></p>
+                                <p style={{ margin: '2px 16px ' }}><b>{modalPost?.creatorName} </b>
+                                    {modalPost?.caption}
+                                </p>
+                                <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={() => handleShowCommentsSection(modalPost._id)}>View all comments</Button>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <ButtonBootstrap onClick={() => setShowPostModal(false)}>Close</ButtonBootstrap>
                             </Modal.Footer>
                         </Modal>
 
@@ -355,17 +424,24 @@ function Homepage(props) {
                                 </Stack>
                                 <p className='bio'>{user.bio}</p>
                             </Stack>
-                            <ImageList sx={{ width: '100%', height: 300 }} cols={4} rowHeight={164} gap='2px'>
-                                {itemData.map((item) => (
-                                    <ImageListItem key={item.img}>
-                                        <img
-                                            src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                            srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                            alt={item.title}
-                                            loading="lazy"
-                                        />
-                                    </ImageListItem>
-                                ))}
+                            <ImageList sx={{ width: '100%', height: 300, padding: '10px' }} cols={4} rowHeight={100} gap='4px'>
+                                {
+                                    userPosts?.map((post) => {
+                                        const currentPost = post
+                                        return (
+                                            <ImageListItem key={post._id} style={{height:'150px'}}>
+                                                <img
+                                                    className='postBeautify'
+                                                    src={post.postUploaded}
+                                                    srcSet={post.postUploaded}
+                                                    alt={post.creatorName}
+                                                    loading="lazy"
+                                                    onClick={() => postModalAssign(currentPost)}
+                                                />
+                                            </ImageListItem>
+                                        )
+                                    })
+                                }
                             </ImageList>
                         </Card>
                     </Stack>

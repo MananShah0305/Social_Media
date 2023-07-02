@@ -5,6 +5,11 @@ export const getPosts = async (req, res) => {
     res.status(200).json({ status: 'success', posts: result })
 }
 
+export const getIndividualUserPosts = async (req, res) => {
+    const result = await postModel.find({creatorName:req.body.creatorName})
+    res.status(200).json({ status: 'success', posts: result })
+}
+
 export const uploadPost = (req, res) => {
     const postUploaded = req.body.postUploaded
     const creatorName = req.body.creatorName

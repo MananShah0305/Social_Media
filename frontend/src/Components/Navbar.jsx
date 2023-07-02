@@ -12,12 +12,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 import Avatar from '@mui/material/Avatar';
 import { red, blue, green, orange } from '@mui/material/colors';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -36,6 +32,66 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
+import '../Styles/Posts.css'
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
+
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import ButtonBootstrap from 'react-bootstrap/Button';
+
+const itemData = [
+    {
+        img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+        title: 'Breakfast',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+        title: 'Burger',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+        title: 'Camera',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+        title: 'Coffee',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+        title: 'Hats',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+        title: 'Honey',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
+        title: 'Basketball',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
+        title: 'Fern',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+        title: 'Mushrooms',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
+        title: 'Tomato basil',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
+        title: 'Sea star',
+    },
+    {
+        img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+        title: 'Bike',
+    },
+];
 
 function Navbar(props) {
 
@@ -44,7 +100,36 @@ function Navbar(props) {
     const [userInfo, setUserInfo] = useState()
     const [allUsers, setAllUsers] = useState(null)
     const [friendInfo, setFriendInfo] = useState(null)
-    const [friend, setFriend] = useState(null)
+    const [friendPosts, setFriendPosts] = useState(null)
+
+    const [like, setLike] = useState(false);
+    const [comment, setComment] = useState('');
+    const [showAddComment, setShowAddComment] = useState(false);
+    const [showCommentsSection, setShowCommentsSection] = useState(false);
+    const [showPostModal, setShowPostModal] = useState(false);
+    const [modalPost, setModalPost] = useState(null);
+    const [currentPostComments, setCurrentPostComments] = useState([])
+
+    const handleCloseAddComment = () => setShowAddComment(false);
+    const handleShowAddComment = () => setShowAddComment(true);
+
+    const handleLike = () => setLike(!like);
+
+    const handleCloseCommentsSection = () => setShowCommentsSection(false);
+    const handleShowCommentsSection = (id) => {
+        friendPosts.map(post => {
+            if (post._id == id) {
+                console.log(post.comments)
+                setCurrentPostComments(post.comments)
+                return;
+            }
+        })
+        setShowCommentsSection(true)
+    }
+
+    const commentChange = (e) => {
+        setComment(e.target.value)
+    }
 
     let location = useLocation();
 
@@ -89,6 +174,24 @@ function Navbar(props) {
     const addFriendFunc = async (friend) => {
         const user = await axios.post(`/user-data/${friend}`, { username: friend })
         setFriendInfo(user.data.userInfo)
+        const postInfo = await axios.post(`/post/userpost/${friend}`,{creatorName:friend})
+        console.log(postInfo.data)
+        console.log("success")
+        setFriendPosts(postInfo.data.posts)
+
+    }
+
+    const friendAllPosts = async (friend) => {
+        const postInfo = await axios.post(`/post/userpost/${friend}`,{creatorName:friend})
+        console.log(postInfo.data)
+        console.log("success")
+        setFriendPosts(postInfo.data.posts)
+    }
+
+    const postModalAssign = (post) => {
+        handleDrawerClose()
+        setModalPost(post)
+        setShowPostModal(true)
     }
 
     return (
@@ -153,8 +256,9 @@ function Navbar(props) {
                                     anchor={anchor}
                                     open={state[anchor]}
                                     onClose={toggleDrawer(anchor, false)}
+                                    style={{ width: '50vw' }}
                                 >
-                                    <Stack direction='row' justifyContent='flex-start' alignItems='center' spacing={4} style={{ backgroundColor: '#bbdcfe', width: '30vw', padding: '18px' }}>
+                                    <Stack direction='row' justifyContent='flex-start' alignItems='center' spacing={4} style={{ backgroundColor: '#bbdcfe', width: '100%', padding: '18px' }}>
                                         <IconButton onClick={handleDrawerClose} style={{ backgroundColor: 'rgb(65, 129, 246)', color: 'white' }}>
                                             <ChevronRightIcon />
                                         </IconButton>
@@ -163,31 +267,32 @@ function Navbar(props) {
                                             freeSolo
                                             options={allUsers}
                                             autoHighlight
-                                            onChange={(e, value) => addFriendFunc(value.username)}
-                                            getOptionLabel={(option) => option.username}
+                                            onChange={(e, value) => addFriendFunc(value?.username)}
+                                            getOptionLabel={(option) => option?.username}
+                                            style={{ width: '100%', minWidth: '22vw' }}
                                             renderOption={(props, option) => (
                                                 <Stack direction='row' spacing={1} alignItems='center' padding='10px' {...props}>
                                                     <Avatar
                                                         loading="lazy"
                                                         width="30"
-                                                        src={option.profilePic}
+                                                        src={option?.profilePic}
                                                         alt=""
                                                     />
-                                                    <span>{option.username}</span>
+                                                    <span>{option?.username}</span>
                                                 </Stack>
                                             )}
-                                            renderInput={(params) => <TextField {...params} label='Search for a friend' style={{ width: '22vw' }} />}
+                                            renderInput={(params) => <TextField {...params} label='Search for a friend' />}
                                         />
                                     </Stack>
                                     {
                                         friendInfo &&
-                                        <Card style={{ fontSize: '18px', width: '90%', margin: '20px auto' }}>
+                                        <Card elevation={0} style={{ fontSize: '18px', width: '100%', margin: '20px auto' }}>
                                             <Stack spacing={2}
-                                                margin='20px'
-                                                padding='20px'
+                                                margin='10px 20px'
+                                                padding='0px 20px'
                                             >
                                                 <Avatar sx={{ width: 140, height: 140, margin: 'auto' }} alt="Travis Howard" src={friendInfo?.profilePic} />
-                                                <p style={{backgroundColor:'rgb(220,220,220)', margin:'30px auto', padding:'6px 10px',borderRadius:'8px'}}>{friendInfo.username}</p>
+                                                <p style={{ backgroundColor: 'rgb(220,220,220)', margin: '30px auto', padding: '10px', borderRadius: '8px', fontWeight: 'bold', fontSize: '18px' }}>{friendInfo.username}</p>
                                                 <Stack
                                                     direction='row'
                                                     justifyContent='space-between'
@@ -213,6 +318,25 @@ function Navbar(props) {
                                                     </Stack>
                                                 </Stack>
                                                 <p className='bio'>{friendInfo?.bio}</p>
+                                                <ImageList sx={{ width: '24vw',height:'240px' ,overflowY:'scroll',padding: '10px' }} cols={2} gap='4px'>
+                                                    {
+                                                        friendPosts?.map((post) => {
+                                                            const currentPost = post
+                                                            return (
+                                                                <ImageListItem key={post._id} style={{height:'160px'}}>
+                                                                    <img
+                                                                        className='postBeautify'
+                                                                        src={post.postUploaded}
+                                                                        srcSet={post.postUploaded}
+                                                                        alt={post.creatorName}
+                                                                        loading="lazy"
+                                                                        onClick={() => postModalAssign(currentPost)}
+                                                                    />
+                                                                </ImageListItem>
+                                                            )
+                                                        })
+                                                    }
+                                                </ImageList>
                                             </Stack>
                                         </Card>
                                     }
@@ -227,6 +351,130 @@ function Navbar(props) {
                     <CircularProgress />
                 </Box>
         }
+            {/* Add comment Modal */}
+            <Modal
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                show={showAddComment}
+                onHide={handleCloseAddComment}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Comment on this post</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <InputGroup className="mb-3">
+                        <Form.Control
+                            as="textarea"
+                            placeholder="Add a comment..."
+                            value={comment}
+                            onChange={commentChange}
+                            aria-label="Comment"
+                            aria-describedby="basic-addon1"
+                            style={{ paddingTop: '1vh' }}
+                        />
+                    </InputGroup>
+                </Modal.Body>
+                <Modal.Footer>
+                    <ButtonBootstrap onClick={handleCloseAddComment}>Close</ButtonBootstrap>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Show comments Modal */}
+            <Modal
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                scrollable
+                show={showCommentsSection}
+                onHide={handleCloseCommentsSection}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Comments</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Stack spacing={2}>
+                        {
+                            currentPostComments.length != 0 ?
+                                currentPostComments.map(comment => {
+                                    return (
+                                        <Stack direction='row' justifyContent='space-between' alignItems='center'>
+                                            <Stack direction='row'
+                                                alignItems='center'
+                                                spacing={2}
+                                                width='60%'>
+
+                                                <Avatar src={comment.commProfilePic} />
+                                                <Stack justifyContent='center'>
+                                                    <b>{comment.commCreator}</b>
+                                                    <p style={{ margin: '0px' }}>{comment.body}</p>
+                                                </Stack>
+                                            </Stack>
+                                            <p style={{ color: 'grey', fontSize: '12px', margin: '0px' }}>{comment.date}</p>
+                                        </Stack>
+                                    )
+                                })
+                                :
+                                <i style={{ fontSize: '32px' }}>No comments</i>
+                        }
+                    </Stack>
+                </Modal.Body>
+                <Modal.Footer>
+                    <ButtonBootstrap onClick={handleCloseCommentsSection}>Close</ButtonBootstrap>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                size="md"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                scrollable
+                show={showPostModal}
+                onHide={() => setShowPostModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <Stack direction='row'
+                            alignItems='center'
+                            spacing={1}>
+                            <Avatar src={modalPost?.creatorProfilePic} />
+                            <b>{modalPost?.creatorName}</b>
+                        </Stack>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ padding: '0px' }}>
+                    <img src={modalPost?.postUploaded} alt="Post" style={{ aspectRatio: '1.5' }} width='100%' />
+                    <Stack direction='row'
+                        alignItems='center'
+                        spacing={0}
+                        style={{ margin: '4px 8px 0px 8px' }}>
+                        <Tooltip title="Like">
+                            <IconButton onClick={handleLike}>
+                                {
+                                    like ?
+                                        <FavoriteIcon style={{ fontSize: '27px', color: 'red' }} />
+                                        :
+                                        <FavoriteBorderIcon style={{ fontSize: '27px' }} />
+                                }
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Comment">
+                            <IconButton onClick={handleShowAddComment}>
+                                <CommentOutlinedIcon style={{ fontSize: '25px' }} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Share">
+                            <IconButton>
+                                <ShareOutlinedIcon fontSize='medium' />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
+                    <p style={{ margin: '0px 16px ' }}><b>{modalPost?.likes} likes </b></p>
+                    <p style={{ margin: '2px 16px ' }}><b>{modalPost?.creatorName} </b>
+                        {modalPost?.caption}
+                    </p>
+                    <Button style={{ margin: '4px 8px', color: '#a0a0a0' }} onClick={() => handleShowCommentsSection(modalPost._id)}>View all comments</Button>
+                </Modal.Body>
+                <Modal.Footer>
+                    <ButtonBootstrap onClick={() => setShowPostModal(false)}>Close</ButtonBootstrap>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }

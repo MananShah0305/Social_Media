@@ -90,6 +90,15 @@ function Post(props) {
             caption: caption,
         }
         console.log(body)
+        
+        axios.post(`/post/${body.creatorName}`, body)
+            .then(res => {
+                console.log('success')
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+
         axios.post('/post', body)
             .then(res => {
                 const getAlert = () => <SweetAlert
@@ -106,6 +115,7 @@ function Post(props) {
                 setAlert(getAlert())
                 setAlertStatus(true)
             })
+        
     }
 
     const onConfirm = () => {

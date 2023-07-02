@@ -1,9 +1,11 @@
 import express from 'express'
-import { getPosts,uploadPost,editPost} from '../Controllers/PostController.js'
+import { getPosts,getIndividualUserPosts,uploadPost,editPost} from '../Controllers/PostController.js'
 
 const router = express.Router()
 
 router.route('/').get(getPosts)
+
+router.route('/userpost/:id').post(getIndividualUserPosts)
 
 router.route('/').post(uploadPost)
 
