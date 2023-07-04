@@ -11,6 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import { blueGrey, deepOrange, deepPurple } from '@mui/material/colors';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import EmojiPicker, { EmojiStyle, SkinTones, Theme, Categories, EmojiClickData, Emoji, SuggestionMode, SkinTonePickerLocation } from "emoji-picker-react";
 
 import IconButton from '@mui/material/IconButton';
 import ButtonBootstrap from 'react-bootstrap/Button';
@@ -30,26 +31,61 @@ import SendIcon from '@mui/icons-material/Send';
 function ChatSection(props) {
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorElEmojiPicker, setAnchorElEmojiPicker] = useState(null);
     const [activeChats, setActiveChats] = useState([])
+    // const [selectedEmoji, setSelectedEmoji] = useState(null);
+    const [message, setMessage] = useState("")
+    // const [messageSent, setMessageSent] = useState(false)
 
-    useEffect(() => {
-        axios.post('/chats', { name: props.username })
-            .then(res => {
-                setActiveChats(res.data.chatInfo)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+    useEffect(async () => {
+        const chatInfo = await axios.post(`/chats/${sessionStorage.getItem('username')}-dashy1997`, { name: props.username, friendName: 'dashy1997' })
+        try {
+            setActiveChats(chatInfo.data.chatInfo)
+        }
+        catch (err) {
+            console.log(err)
+        }
     }, [])
 
 
     const open = Boolean(anchorEl);
+
+    const openEmojiPicker = Boolean(anchorElEmojiPicker);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
+    const handleClickEmojiPicker = (event) => {
+        setAnchorElEmojiPicker(event.currentTarget);
+    };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleCloseEmojiPicker = () => {
+        setAnchorElEmojiPicker(null);
+    };
+
+    const handleMessage = (e) => {
+        setMessage(e.target.value)
+    }
+
+    const handleEmojiClick = (emojiObject) => {
+        // const getEmoji = () => <Emoji
+        //     unified={selectedEmoji}
+        //     emojiStyle={EmojiStyle.GOOGLE}
+        //     size={22}
+        // />
+        // console.log(emojiObject)
+        setMessage(message + emojiObject.emoji)
+    }
+
+    const sendMessage = async () => {
+        const message = await axios.patch(`/chats/${sessionStorage.getItem('username')}-dashy1997`, { name: props.username, friendName: 'dashy1997', message: message })
+        setMessage(null)
+    }
 
     return (
         <div style={{ backgroundColor: '#efefef', height: '100vh' }}>
@@ -137,7 +173,7 @@ function ChatSection(props) {
                                         horizontal: 'left',
                                     }}
                                 >
-                                    <MenuItem onClick={handleClose}>Block</MenuItem>
+                                    <MenuItem>Block</MenuItem>
                                 </Menu>
                             </Stack>
                             <Stack spacing={2} style={{ height: '59vh', overflowY: 'scroll', padding: '40px', background: `url('https://t4.ftcdn.net/jpg/02/95/46/09/360_F_295460913_KBu2PfHEGfuFPPUWGEztWntnqmw0UAQe.jpg') center/cover` }}>
@@ -151,18 +187,83 @@ function ChatSection(props) {
                                 style={{ backgroundColor: '#efefef', height: '70px' }}
                             >
                                 <IconButton className='mx-1'>
-                                    <SentimentVerySatisfiedIcon fontSize='medium' />
+                                    <SentimentVerySatisfiedIcon
+                                        fontSize='medium'
+                                        id="demo-positioned-button"
+                                        aria-controls={openEmojiPicker ? 'demo-positioned-menu' : undefined}
+                                        aria-haspopup="true"
+                                        aria-expanded={openEmojiPicker ? 'true' : undefined}
+                                        onClick={handleClickEmojiPicker}
+                                    />
                                 </IconButton>
+                                <Menu
+                                    id="demo-positioned-menu"
+                                    aria-labelledby="demo-positioned-button"
+                                    anchorEl={anchorElEmojiPicker}
+                                    open={openEmojiPicker}
+                                    onClose={handleCloseEmojiPicker}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                >
+                                    {/* <MenuItem> */}
+                                    <EmojiPicker
+                                        onEmojiClick={handleEmojiClick}
+                                        // autoFocusSearch={false}
+                                        // theme={Theme.AUTO}
+                                        // searchDisabled
+                                        skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
+                                        // height={400}
+                                        // width="50%"
+                                        emojiVersion="0.6"
+                                        lazyLoadEmojis={true}
+                                        // previewConfig={{
+                                        //   defaultCaption: "Pick one!",
+                                        //   defaultEmoji: "1f92a" // 🤪
+                                        // }}
+                                        // suggestedEmojisMode={SuggestionMode.RECENT}
+                                        // skinTonesDisabled
+                                        // searchPlaceHolder="Filter"
+                                        // defaultSkinTone={SkinTones.MEDIUM}
+                                        emojiStyle={EmojiStyle.GOOGLE}
+                                    // categories={[
+                                    //   {
+                                    //     name: "Fun and Games",
+                                    //     category: Categories.ACTIVITIES
+                                    //   },
+                                    //   {
+                                    //     name: "Smiles & Emotions",
+                                    //     category: Categories.SMILEYS_PEOPLE
+                                    //   },
+                                    //   {
+                                    //     name: "Flags",
+                                    //     category: Categories.FLAGS
+                                    //   },
+                                    //   {
+                                    //     name: "Yum Yum",
+                                    //     category: Categories.FOOD_DRINK
+                                    //   }
+                                    // ]}
+                                    />
+                                    {/* </MenuItem> */}
+                                </Menu>
                                 <InputGroup >
                                     <Form.Control
                                         aria-label="Example text with button addon"
                                         aria-describedby="basic-addon1"
                                         placeholder='Type your message....'
-                                        style={{ borderRadius: '30px', paddingLeft:'16px', height:'40px' }}
+                                        style={{ borderRadius: '30px', paddingLeft: '16px', height: '40px' }}
+                                        value={message}
+                                        onChange={handleMessage}
                                     />
                                 </InputGroup>
                                 <IconButton className='mx-1'>
-                                    <SendIcon fontSize='medium' />
+                                    <SendIcon fontSize='medium' onClick={sendMessage} />
                                 </IconButton>
                             </Stack>
                         </Card>

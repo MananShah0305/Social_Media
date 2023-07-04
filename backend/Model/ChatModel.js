@@ -6,15 +6,11 @@ const messageSchema = {
     messageTimestamp: Date
 }
 
-const friendSchema = {
-    name: String,
-    showChat: Boolean,
-    chats:[messageSchema]
-}
-
 const chatSchema = new mongoose.Schema({
-    name: String,
-    friends: [friendSchema]
+    username: String,
+    friendname: String,
+    showChat: Boolean,
+    chats: [messageSchema]
 }, { collection: 'chat-data' })
 
 const chats = mongoose.model('Chats', chatSchema)
