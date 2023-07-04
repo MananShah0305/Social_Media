@@ -1,7 +1,7 @@
 import chatsModel from '../Model/ChatModel.js'
 
 export const getIndividualChat = async (req, res) => {
-    const result = await chatsModel.findOne({ name: req.body.username,friendName:req.body.friendName })
+    const result = await chatsModel.findOne({ username: req.body.name, friendName: req.body.friendName })
     try {
         return res.status('200').json({ status: 'success', chatInfo: result })
     }
@@ -14,9 +14,9 @@ export const chatsUpdate = async (req, res) => {
 
     const name = req.body.user
     const friendName = req.body.friendName
-    const newChat = req.body.chat
+    const newChat = req.body.newChat
 
-    chatsModel.findOneAndUpdate({ name: name, 'friends.name': friendName }, {
+    chatsModel.findOneAndUpdate({ username: name, friendName: friendName }, {
         $cond: {
             if: {
                 $eq: ["$showChat", false]
@@ -24,7 +24,7 @@ export const chatsUpdate = async (req, res) => {
             then: true
         },
         $push: {
-            'friends.$.chats': newChat
+            'chats': newChat
         }
     })
         .then(() => {

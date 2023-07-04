@@ -3,7 +3,10 @@ import mongoose from 'mongoose'
 const messageSchema = {
     messageType: String,
     message: String,
-    messageTimestamp: Date
+    messageTimestamp: {
+        type:Date,
+        default:new Date()
+    }
 }
 
 const chatSchema = new mongoose.Schema({

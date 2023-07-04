@@ -6,8 +6,8 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import SavedSearchIcon from '@mui/icons-material/SavedSearch';
-import SearchIcon from '@mui/icons-material/Search';
 import LogoutIcon from '@mui/icons-material/Logout';
+import CloseIcon from '@mui/icons-material/Close';
 
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -15,10 +15,8 @@ import Button from '@mui/material/Button';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Avatar from '@mui/material/Avatar';
-import { red, blue, green, orange } from '@mui/material/colors';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/material/styles';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { InputGroup, FormControl } from 'react-bootstrap';
 import Stack from '@mui/material/Stack';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -30,17 +28,19 @@ import { logoutUser } from '../LoginRedux/loginActions.js'
 import CircularProgress from '@mui/material/CircularProgress';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
 import '../Styles/Posts.css'
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+// import Snackbar from '@mui/material/Snackbar';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import ButtonBootstrap from 'react-bootstrap/Button';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 const itemData = [
     {
@@ -109,6 +109,20 @@ function Navbar(props) {
     const [showPostModal, setShowPostModal] = useState(false);
     const [modalPost, setModalPost] = useState(null);
     const [currentPostComments, setCurrentPostComments] = useState([])
+    const [follow, setFollow] = useState(false)
+    // const [openSnackbar, setOpenSnackbar] = useState(false);
+
+    // const handleClickSnackbar = () => {
+    //     setOpenSnackbar(true);
+    // };
+
+    // const handleCloseSnackbar = (event, reason) => {
+    //     if (reason === 'clickaway') {
+    //         return;
+    //     }
+
+    //     setOpenSnackbar(false);
+    // };
 
     const handleCloseAddComment = () => setShowAddComment(false);
     const handleShowAddComment = () => setShowAddComment(true);
@@ -174,7 +188,7 @@ function Navbar(props) {
     const addFriendFunc = async (friend) => {
         const user = await axios.post(`/user-data/${friend}`, { username: friend })
         setFriendInfo(user.data.userInfo)
-        const postInfo = await axios.post(`/post/userpost/${friend}`,{creatorName:friend})
+        const postInfo = await axios.post(`/post/userpost/${friend}`, { creatorName: friend })
         console.log(postInfo.data)
         console.log("success")
         setFriendPosts(postInfo.data.posts)
@@ -182,7 +196,7 @@ function Navbar(props) {
     }
 
     const friendAllPosts = async (friend) => {
-        const postInfo = await axios.post(`/post/userpost/${friend}`,{creatorName:friend})
+        const postInfo = await axios.post(`/post/userpost/${friend}`, { creatorName: friend })
         console.log(postInfo.data)
         console.log("success")
         setFriendPosts(postInfo.data.posts)
@@ -193,6 +207,19 @@ function Navbar(props) {
         setModalPost(post)
         setShowPostModal(true)
     }
+
+    // const action = (
+    //     <React.Fragment>
+    //         <IconButton
+    //             size="small"
+    //             aria-label="close"
+    //             color="inherit"
+    //             onClick={handleCloseSnackbar}
+    //         >
+    //             <CloseIcon fontSize="small" />
+    //         </IconButton>
+    //     </React.Fragment>
+    // );
 
     return (
         <>{
@@ -292,11 +319,24 @@ function Navbar(props) {
                                                 padding='0px 20px'
                                             >
                                                 <Avatar sx={{ width: 140, height: 140, margin: 'auto' }} alt="Travis Howard" src={friendInfo?.profilePic} />
-                                                <p style={{ backgroundColor: 'rgb(220,220,220)', margin: '30px auto', padding: '10px', borderRadius: '8px', fontWeight: 'bold', fontSize: '18px' }}>{friendInfo.username}</p>
+                                                <Stack direction='row' spacing={1} style={{ margin: '20px auto' }} alignItems='center'>
+                                                    <p style={{ backgroundColor: 'rgb(220,220,220)', margin: '0px', padding: '10px', borderRadius: '8px', fontWeight: 'bold', fontSize: '18px' }}>{friendInfo.username}</p>
+                                                    <Tooltip title={follow ? 'Following' : 'Follow'}>
+                                                        <IconButton onClick={() => setFollow(!follow)}>
+                                                            {
+                                                                follow ?
+                                                                    <PersonAddIcon style={{ color: 'rgb(65, 129, 246)' }}></PersonAddIcon>
+                                                                    :
+                                                                    <PersonAddOutlinedIcon />
+                                                            }
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Stack>
                                                 <Stack
                                                     direction='row'
                                                     justifyContent='space-between'
                                                     alignItems='center'
+                                                    style={{ margin: '0px' }}
                                                 >
                                                     <Stack spacing={1}
                                                         alignItems='center'
@@ -317,15 +357,15 @@ function Navbar(props) {
                                                         <b style={{ margin: '0px' }}>Following</b>
                                                     </Stack>
                                                 </Stack>
-                                                <p className='bio'>{friendInfo?.bio}</p>
-                                                <ImageList sx={{ width: '24vw',height:'240px' ,overflowY:'scroll',padding: '10px' }} cols={2} gap='4px'>
+                                                <p className='bio' >{friendInfo?.bio}</p>
+                                                <ImageList sx={{ width: '24vw', height: '250px', overflowY: 'scroll', padding: '10px' }} cols={2} gap='2px'>
                                                     {
                                                         friendPosts?.map((post) => {
                                                             const currentPost = post
                                                             return (
-                                                                <ImageListItem key={post._id} style={{height:'160px'}}>
+                                                                <ImageListItem key={post._id} style={{ height: '170px' }}>
                                                                     <img
-                                                                        className='postBeautify'
+                                                                        className='postBeautifyNav'
                                                                         src={post.postUploaded}
                                                                         srcSet={post.postUploaded}
                                                                         alt={post.creatorName}
@@ -341,10 +381,18 @@ function Navbar(props) {
                                         </Card>
                                     }
                                 </Drawer>
+                                {/* <Snackbar
+                                    open={openSnackbar}
+                                    autoHideDuration={6000}
+                                    onClose={handleCloseSnackbar}
+                                    message={`Following ${friendInfo?.username}`}
+                                    action={action}
+                                    style={{ zIndex: '100' }}
+                                /> */}
                             </React.Fragment>
                         ))}
                     </div>
-                </div>
+                </div >
                 :
                 <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center", height: "100vh" }}>
                     Loading... &nbsp;

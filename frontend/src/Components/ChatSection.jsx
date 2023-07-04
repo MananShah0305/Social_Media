@@ -32,15 +32,16 @@ function ChatSection(props) {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElEmojiPicker, setAnchorElEmojiPicker] = useState(null);
-    const [activeChats, setActiveChats] = useState([])
+    const [activeChat, setActiveChat] = useState([])
     // const [selectedEmoji, setSelectedEmoji] = useState(null);
     const [message, setMessage] = useState("")
     // const [messageSent, setMessageSent] = useState(false)
 
     useEffect(async () => {
-        const chatInfo = await axios.post(`/chats/${sessionStorage.getItem('username')}-dashy1997`, { name: props.username, friendName: 'dashy1997' })
+        const chatsFriend = await axios.post(`/chats/${sessionStorage.getItem('username')}-dashy1997`, { name: sessionStorage.getItem('username'), friendName: 'dashy1997' })
         try {
-            setActiveChats(chatInfo.data.chatInfo)
+            // console.log(chatsFriend.data.chats)
+            setActiveChat(chatsFriend.data.chatInfo.chats)
         }
         catch (err) {
             console.log(err)
@@ -83,7 +84,16 @@ function ChatSection(props) {
     }
 
     const sendMessage = async () => {
-        const message = await axios.patch(`/chats/${sessionStorage.getItem('username')}-dashy1997`, { name: props.username, friendName: 'dashy1997', message: message })
+        const newSentChat = {
+            messageType: 'send',
+            message: message,
+        }
+        const sentChat = await axios.patch(`/chats/${sessionStorage.getItem('username')}-dashy1997`, { name: sessionStorage.getItem('username'), friendName: 'dashy1997', newChat: newSentChat })
+        const newRecvChat = {
+            messageType: 'receive',
+            message: message,
+        }
+        const recvChat = await axios.patch(`/chats/dashy1997-${sessionStorage.getItem('username')}`, { name: 'dashy1997', friendName: sessionStorage.getItem('username'), newChat: newRecvChat })
         setMessage(null)
     }
 
@@ -112,8 +122,8 @@ function ChatSection(props) {
                             </InputGroup>
                         </Stack>
                         <List style={{ padding: '5px 0px', overflowY: 'scroll', height: '68vh' }}>
-                            {
-                                activeChats?.friends?.map(ac => {
+                            {/* {
+                                activeChat?.friends?.map(ac => {
                                     ac.showChat && (
                                         <ListItem style={{ padding: '5px' }}>
                                             <ListItemButton>
@@ -133,13 +143,13 @@ function ChatSection(props) {
                                         </ListItem>
                                     )
                                 })
-                            }
+                            } */}
                         </List>
 
                     </Card>
                     <Divider orientation="vertical" style={{ width: '2px', backgroundColor: 'grey', height: '100vh' }} />
                     <Stack spacing={2} style={{ width: '100vw' }}>
-                        <Card style={{ backgroundColor: 'white' }}>
+                        <Card elevation={0} style={{ backgroundColor: 'white' }}>
                             <Stack direction='row'
                                 justifyContent='space-between'
                                 style={{ backgroundColor: 'rgba(216, 216, 216,0.5)', padding: '16px' }}>
@@ -176,15 +186,30 @@ function ChatSection(props) {
                                     <MenuItem>Block</MenuItem>
                                 </Menu>
                             </Stack>
-                            <Stack spacing={2} style={{ height: '59vh', overflowY: 'scroll', padding: '40px', background: `url('https://t4.ftcdn.net/jpg/02/95/46/09/360_F_295460913_KBu2PfHEGfuFPPUWGEztWntnqmw0UAQe.jpg') center/cover` }}>
-                                <Paper elevation={3} style={{ padding: '10px 20px', borderRadius: '20px', width: 'fit-content', maxWidth: '28vw', backgroundColor: '#f3f3f3' }}>Hi</Paper>
-                                <Paper elevation={3} style={{ padding: '10px 20px ', borderRadius: '20px', width: 'fit-content', maxWidth: '28vw', backgroundColor: '#4181f6', color: 'white' }}>Hi</Paper>
+                            <Stack spacing={2} style={{ height: '60vh', overflowY: 'scroll', padding: '32px', background: `url('https://t4.ftcdn.net/jpg/02/95/46/09/360_F_295460913_KBu2PfHEGfuFPPUWGEztWntnqmw0UAQe.jpg') center/cover` }}>
+                                {
+                                    activeChat?.map(chat => {
+                                        return (
+                                            <Paper elevation={3} style={{ padding: '10px 20px', borderRadius: '20px', width: 'fit-content', backgroundColor: `${chat.messageType == `send` ? `#4181f6` : `white`}`, marginLeft: `${chat.messageType == `send` && `auto`}` }}>
+                                                <Stack
+                                                    direction='row'
+                                                    spacing={8}
+                                                    alignItems='flex-end'
+                                                    style={{ color: `${chat.messageType == `send` ? `white` : `black`}` }}
+                                                >
+                                                    <span style={{ maxWidth: '20vw' }}>{chat.message}</span>
+                                                    <span style={{ fontSize: '10px', opacity: '0.6' }}>{chat.messageTimestamp}</span>
+                                                </Stack>
+                                            </Paper>
+                                        )
+                                    })
+                                }
                             </Stack>
                             <Stack
                                 direction='row'
                                 spacing={0}
                                 alignItems='center'
-                                style={{ backgroundColor: '#efefef', height: '70px' }}
+                                style={{ backgroundColor: '#efefef', height: '9vh' }}
                             >
                                 <IconButton className='mx-1'>
                                     <SentimentVerySatisfiedIcon

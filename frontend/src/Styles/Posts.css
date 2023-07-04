@@ -1,5 +1,23 @@
 .postBeautify {
-    --s: 150px;
+    --s: 152px;
+    /* the size of the image */
+    --b: 2px;
+    /* the border thickness*/
+    --g: 1px;
+    /* the gap */
+    --c: #ffffff;
+    /* the color */
+
+    width: var(--s);
+    aspect-ratio: 1;
+    outline: calc(var(--s)/2) solid #0009;
+    outline-offset: calc(var(--s)/-2);
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.postBeautifyNav {
+    --s: 170px;
     /* the size of the image */
     --b: 2px;
     /* the border thickness*/
@@ -17,6 +35,11 @@
 }
 
 .postBeautify:hover {
+    outline: var(--b) solid var(--c);
+    outline-offset: var(--g);
+}
+
+.postBeautifyNav:hover {
     outline: var(--b) solid var(--c);
     outline-offset: var(--g);
 }

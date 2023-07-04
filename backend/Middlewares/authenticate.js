@@ -6,7 +6,7 @@ const secret_key = 'meetup_pvt_ltd_tech_team'
 const authenticate = async (req, res, next) => {
     try {
         const token = req.headers.authorization
-        const verifyToken = jwt.verify(token, secret_key)
+        const verifyToken = jwt?.verify(token, secret_key)
         const user = await UserDataModel.findOne({ _id: verifyToken._id })
 
         if (!user) {

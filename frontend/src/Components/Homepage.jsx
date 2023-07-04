@@ -424,7 +424,7 @@ function Homepage(props) {
                                 </Stack>
                                 <p className='bio'>{user.bio}</p>
                             </Stack>
-                            <ImageList sx={{ width: '100%', height: 300, padding: '10px' }} cols={4} rowHeight={100} gap='4px'>
+                            <ImageList sx={{ width: '100%', height: 300, padding: '10px' }} cols={4} rowHeight={100} gap='2px'>
                                 {
                                     userPosts?.map((post) => {
                                         const currentPost = post
