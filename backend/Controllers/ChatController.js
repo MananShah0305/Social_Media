@@ -32,20 +32,3 @@ export const chatsUpdate = async (req, res) => {
         })
         .catch(err => console.log(err))
 }
-
-export const addFriend = async (req, res) => {
-    const existingUser = await chatsModel.findOne({ name: req.body.username })
-    const friendAdd = { name: req.body.friendName, chats: [] }
-
-    chatsModel.updateOne({ name: existingUser.username }, {
-        $push: {
-            friends: friendAdd
-        }
-    })
-        .then(() => {
-            console.log('Success')
-        })
-        .catch(err => console.log(err))
-
-    return res.status(200).json({ message: 'Friend created', status: 'success' })
-}

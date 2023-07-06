@@ -12,6 +12,7 @@ import { blueGrey, deepOrange, deepPurple } from '@mui/material/colors';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import EmojiPicker, { EmojiStyle, SkinTones, Theme, Categories, EmojiClickData, Emoji, SuggestionMode, SkinTonePickerLocation } from "emoji-picker-react";
+import TextField from '@mui/material/TextField';
 
 import IconButton from '@mui/material/IconButton';
 import ButtonBootstrap from 'react-bootstrap/Button';
@@ -22,6 +23,7 @@ import '../Styles/Homepage.css'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchIcon from '@mui/icons-material/Search';
@@ -30,6 +32,7 @@ import SendIcon from '@mui/icons-material/Send';
 
 function ChatSection(props) {
 
+    const [allFriends, setAllFriends] = useState(null)
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElEmojiPicker, setAnchorElEmojiPicker] = useState(null);
     const [activeChat, setActiveChat] = useState([])
@@ -48,6 +51,10 @@ function ChatSection(props) {
         }
     }, [])
 
+    useEffect(async () => {
+        const users = await axios.get('/chats/')
+        // setAllUsers(users.data.allUserBasicInfo.filter(user => user.username != `${sessionStorage.getItem('username')}`))
+    }, [])
 
     const open = Boolean(anchorEl);
 
@@ -107,19 +114,27 @@ function ChatSection(props) {
                     <Card style={{ maxHeight: '80vh', backgroundColor: 'white', width: '50vw' }}>
                         <Stack spacing={2} direction='row' justifyContent='space-between' alignItems='center' style={{ backgroundColor: 'rgb(65, 129, 246)', padding: '20px' }}>
                             <h3 style={{ margin: '0px', color: 'white' }}>Chats</h3>
-                            <InputGroup style={{ width: '60%' }}>
-                                <FormControl
-                                    placeholder="Search for friends..."
-                                    aria-label="friends"
-                                    aria-describedby="basic-addon1"
-                                    style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px' }}
-                                />
-                                <InputGroup.Text id="basic-addon1" style={{ backgroundColor: 'rgb(65, 129, 246)', borderTopRightRadius: '20px', borderBottomRightRadius: '20px' }}>
-                                    <IconButton style={{ padding: '0px' }}>
-                                        <SearchIcon style={{ color: 'white' }}></SearchIcon>
-                                    </IconButton>
-                                </InputGroup.Text>
-                            </InputGroup>
+                            <Autocomplete
+                                id="free-solo-demo"
+                                freeSolo
+                                options={allFriends}
+                                autoHighlight
+                                // onChange={(e, value) => addChatToSidebar(value?.username)}
+                                getOptionLabel={(option) => option?.username}
+                                style={{ width: '100%', minWidth: '22vw' }}
+                                renderOption={(props, option) => (
+                                    <Stack direction='row' spacing={1} alignItems='center' padding='10px' {...props}>
+                                        <Avatar
+                                            loading="lazy"
+                                            width="30"
+                                            src={option?.profilePic}
+                                            alt=""
+                                        />
+                                        <span>{option?.username}</span>
+                                    </Stack>
+                                )}
+                                renderInput={(params) => <TextField {...params} label='Open a chat' />}
+                            />
                         </Stack>
                         <List style={{ padding: '5px 0px', overflowY: 'scroll', height: '68vh' }}>
                             {/* {

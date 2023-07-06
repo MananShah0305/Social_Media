@@ -101,6 +101,7 @@ function Navbar(props) {
     const [allUsers, setAllUsers] = useState(null)
     const [friendInfo, setFriendInfo] = useState(null)
     const [friendPosts, setFriendPosts] = useState(null)
+    const [friendFollowerInfo, setFriendFollowerInfo] = useState(null)
 
     const [like, setLike] = useState(false);
     const [comment, setComment] = useState('');
@@ -154,7 +155,7 @@ function Navbar(props) {
 
     useEffect(async () => {
         const users = await axios.get('/basicinfo')
-        setAllUsers(users.data.allUserBasicInfo)
+        setAllUsers(users.data.allUserBasicInfo.filter(user => user.username != `${sessionStorage.getItem('username')}`))
     }, [])
 
     const toggleDrawer = (anchor, open) => (event) => {
@@ -175,38 +176,45 @@ function Navbar(props) {
         justifyContent: 'flex-start',
     }));
 
-    const handleDrawerClose = () => {
-        setState({ right: false })
-    };
-
     const logoutSite = () => {
         // props.logoutUser()
         sessionStorage.removeItem('userAuthorizeToken')
         navigate('/login')
     }
 
-    const addFriendFunc = async (friend) => {
+    const handleFriendInfo = async (friend) => {
         const user = await axios.post(`/user-data/${friend}`, { username: friend })
         setFriendInfo(user.data.userInfo)
+
         const postInfo = await axios.post(`/post/userpost/${friend}`, { creatorName: friend })
-        console.log(postInfo.data)
-        console.log("success")
         setFriendPosts(postInfo.data.posts)
 
+        const friendDataInfo = await axios.post(`/follower`, { username: userInfo.username })
+        console.log(friendDataInfo.data)
+        setFriendFollowerInfo(friendDataInfo.data.friendData)
+        if (friendDataInfo.data.friendData?.followers.names.find(friendInfo.username)) {
+            setFollow(true)
+        }
     }
 
-    const friendAllPosts = async (friend) => {
-        const postInfo = await axios.post(`/post/userpost/${friend}`, { creatorName: friend })
-        console.log(postInfo.data)
-        console.log("success")
-        setFriendPosts(postInfo.data.posts)
-    }
+    const handleDrawerClose = async () => {
+        setState({ right: false })
+        const body = {
+            username: userInfo.username,
+            userProfilePic: userInfo.profilePic,
+            friendName: friendInfo.username,
+            friendProfilePic: friendInfo.profilePic,
+            follow: follow
+        }
+        const friendAdd = await axios.put(`/follower/add-friend`, body)
+    };
 
     const postModalAssign = (post) => {
         handleDrawerClose()
         setModalPost(post)
         setShowPostModal(true)
     }
+
 
     // const action = (
     //     <React.Fragment>
@@ -234,7 +242,7 @@ function Navbar(props) {
                                     ?
                                     <img src={userInfo.profilePic} alt="Profile Pic" width='50' height='50' style={{ borderRadius: '40px' }} />
                                     :
-                                    <Avatar sx={{ bgcolor: '#0070ff', color: 'white' }}>{userInfo.username?.charAt(0)}</Avatar>
+                                    <PersonAddIcon />
                             }
                             <h5 style={{ margin: '0px', marginLeft: '8px', color: 'white' }}>{userInfo.username}</h5>
                         </div>
@@ -294,7 +302,7 @@ function Navbar(props) {
                                             freeSolo
                                             options={allUsers}
                                             autoHighlight
-                                            onChange={(e, value) => addFriendFunc(value?.username)}
+                                            onChange={(e, value) => handleFriendInfo(value?.username)}
                                             getOptionLabel={(option) => option?.username}
                                             style={{ width: '100%', minWidth: '22vw' }}
                                             renderOption={(props, option) => (
@@ -319,18 +327,19 @@ function Navbar(props) {
                                                 padding='0px 20px'
                                             >
                                                 <Avatar sx={{ width: 140, height: 140, margin: 'auto' }} alt="Travis Howard" src={friendInfo?.profilePic} />
-                                                <Stack direction='row' spacing={1} style={{ margin: '20px auto' }} alignItems='center'>
+                                                <Stack direction='row' spacing={2} style={{ margin: '20px auto' }} alignItems='center'>
                                                     <p style={{ backgroundColor: 'rgb(220,220,220)', margin: '0px', padding: '10px', borderRadius: '8px', fontWeight: 'bold', fontSize: '18px' }}>{friendInfo.username}</p>
-                                                    <Tooltip title={follow ? 'Following' : 'Follow'}>
-                                                        <IconButton onClick={() => setFollow(!follow)}>
+                                                    {/* <Tooltip title={follow ? 'Following' : 'Follow'}>
+                                                        <IconButton>
                                                             {
                                                                 follow ?
-                                                                    <PersonAddIcon style={{ color: 'rgb(65, 129, 246)' }}></PersonAddIcon>
+                                                                    <PersonAddIcon style={{ color: 'rgb(65, 129, 246)' }} onClick={() => setFollow(true)}></PersonAddIcon>
                                                                     :
-                                                                    <PersonAddOutlinedIcon />
+                                                                    <PersonAddOutlinedIcon onClick={() => setFollow(false)} />
                                                             }
                                                         </IconButton>
-                                                    </Tooltip>
+                                                    </Tooltip> */}
+                                                    <ButtonBootstrap variant={follow ? "primary" : "outline-primary"} onClick={() => setFollow(!follow)}>{follow ? `Following` : `Follow`}</ButtonBootstrap>
                                                 </Stack>
                                                 <Stack
                                                     direction='row'
@@ -341,42 +350,48 @@ function Navbar(props) {
                                                     <Stack spacing={1}
                                                         alignItems='center'
                                                     >
-                                                        <b>20</b>
+                                                        <b>{friendPosts?.length}</b>
                                                         <b style={{ margin: '0px' }}>Posts</b>
                                                     </Stack>
                                                     <Stack spacing={1}
                                                         alignItems='center'
                                                     >
-                                                        <b>1264</b>
+                                                        <b>{friendFollowerInfo?.followers.count}</b>
                                                         <b style={{ margin: '0px' }}>Followers</b>
                                                     </Stack>
                                                     <Stack spacing={1}
                                                         alignItems='center'
                                                     >
-                                                        <b>822</b>
+                                                        <b>{friendFollowerInfo?.following.count}</b>
                                                         <b style={{ margin: '0px' }}>Following</b>
                                                     </Stack>
                                                 </Stack>
                                                 <p className='bio' >{friendInfo?.bio}</p>
-                                                <ImageList sx={{ width: '24vw', height: '250px', overflowY: 'scroll', padding: '10px' }} cols={2} gap='2px'>
-                                                    {
-                                                        friendPosts?.map((post) => {
-                                                            const currentPost = post
-                                                            return (
-                                                                <ImageListItem key={post._id} style={{ height: '170px' }}>
-                                                                    <img
-                                                                        className='postBeautifyNav'
-                                                                        src={post.postUploaded}
-                                                                        srcSet={post.postUploaded}
-                                                                        alt={post.creatorName}
-                                                                        loading="lazy"
-                                                                        onClick={() => postModalAssign(currentPost)}
-                                                                    />
-                                                                </ImageListItem>
-                                                            )
-                                                        })
-                                                    }
-                                                </ImageList>
+                                                {
+                                                    friendPosts?.length != 0
+                                                        ?
+                                                        <ImageList sx={{ width: '24vw', height: '250px', overflowY: 'scroll', padding: '10px' }} cols={2} gap='2px'>
+                                                            {
+                                                                friendPosts?.map((post) => {
+                                                                    const currentPost = post
+                                                                    return (
+                                                                        <ImageListItem key={post._id} style={{ height: '170px' }}>
+                                                                            <img
+                                                                                className='postBeautifyNav'
+                                                                                src={post.postUploaded}
+                                                                                srcSet={post.postUploaded}
+                                                                                alt={post.creatorName}
+                                                                                loading="lazy"
+                                                                                onClick={() => postModalAssign(currentPost)}
+                                                                            />
+                                                                        </ImageListItem>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </ImageList>
+                                                        :
+                                                        <p style={{ fontSize: '20px', fontWeight: 'bold', color: 'rgb(40,40,40)', margin: 'auto', height: '300px', width: 'max-content' }}>No Posts yet</p>
+                                                }
                                             </Stack>
                                         </Card>
                                     }

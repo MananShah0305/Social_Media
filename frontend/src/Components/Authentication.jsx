@@ -223,15 +223,14 @@ function Authentication(props) {
     setStatusRegister("")
     setStatusLogin("")
     console.log(value);
-    if (value == 1) {
-      formik.values.email = initialRegister.email
-      formik.values.password = initialRegister.password
-      formik.values.username = initialRegister.username
-    }
-    else {
-      console.log(value);
-    }
-
+    // if (value == 1) {
+    //   formik.values.email = initialRegister.email
+    //   formik.values.password = initialRegister.password
+    //   formik.values.username = initialRegister.username
+    // }
+    // else {
+    //   console.log(value);
+    // }
     setLogin(initialLogin)
   }
 
@@ -245,7 +244,7 @@ function Authentication(props) {
 
   const registerChange = (e) => {
     const reader = new FileReader();
-    if(e.target.files[0]){
+    if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0])
     }
     reader.onload = () => {
@@ -264,9 +263,9 @@ function Authentication(props) {
       profilePic: profilePic,
       bio: bio
     }
+
     axios.post('/sign-up', body)
       .then((res) => {
-        console.log(body)
         setValue(0)
         setAlertStatus(true)
         setMessage(res.data.message)
@@ -274,6 +273,16 @@ function Authentication(props) {
         setProfileModalShow(false)
         setProfilePic('')
         setBio('')
+        formik.values.email = initialRegister.email
+        formik.values.password = initialRegister.password
+        formik.values.username = initialRegister.username
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    axios.post('/follower/create-follow-data', { username: formik.values.username })
+      .then((response) => {
+        console.log(response.data.status)
       })
       .catch(err => {
         console.log(err);
@@ -346,7 +355,7 @@ function Authentication(props) {
         setAlertStatus(true)
         setMessage(res.data.message)
         setStatusLogin(res.data.status)
-        sessionStorage.setItem('userAuthorizeToken',res.data.result.token)
+        sessionStorage.setItem('userAuthorizeToken', res.data.result.token)
       })
       .catch(err => {
         console.log(err);

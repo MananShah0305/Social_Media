@@ -5,6 +5,7 @@ import postRouter from './Routes/PostsRoutes.js'
 import userDataRouter from './Routes/UserDataRoutes.js'
 import basicInfoRouter from './Routes/BasicInfoRoutes.js'
 import chatRouter from './Routes/ChatRoutes.js'
+import followerRouter from './Routes/FollowerRoutes.js'
 import multer from 'multer'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
@@ -42,3 +43,4 @@ app.use('/post', postRouter) //Here '/post' is mentioned,so in routes, only ment
 app.use('/', userDataRouter) 
 app.use('/chats', chatRouter) 
 app.use('/basicinfo', basicInfoRouter) 
+app.use('/follower', followerRouter) 

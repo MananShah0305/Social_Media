@@ -160,7 +160,7 @@ function Homepage(props) {
     }, [])
 
     useEffect(async () => {
-        const postInfo = await axios.post(`/post/userpost/${sessionStorage.getItem('username')}`,{creatorName:sessionStorage.getItem('username')})
+        const postInfo = await axios.post(`/post/userpost/${sessionStorage.getItem('username')}`, { creatorName: sessionStorage.getItem('username') })
         // console.log(postInfo.data)
         setUserPosts(postInfo.data.posts)
     }, [])
@@ -424,25 +424,31 @@ function Homepage(props) {
                                 </Stack>
                                 <p className='bio'>{user.bio}</p>
                             </Stack>
-                            <ImageList sx={{ width: '100%', height: 300, padding: '10px' }} cols={4} rowHeight={100} gap='2px'>
-                                {
-                                    userPosts?.map((post) => {
-                                        const currentPost = post
-                                        return (
-                                            <ImageListItem key={post._id} style={{height:'150px'}}>
-                                                <img
-                                                    className='postBeautify'
-                                                    src={post.postUploaded}
-                                                    srcSet={post.postUploaded}
-                                                    alt={post.creatorName}
-                                                    loading="lazy"
-                                                    onClick={() => postModalAssign(currentPost)}
-                                                />
-                                            </ImageListItem>
-                                        )
-                                    })
-                                }
-                            </ImageList>
+                            {
+                                userPosts?.length != 0
+                                    ?
+                                    <ImageList sx={{ width: '100%', height: 300, padding: '10px' }} cols={4} rowHeight={100} gap='2px'>
+                                        {
+                                            userPosts?.map((post) => {
+                                                const currentPost = post
+                                                return (
+                                                    <ImageListItem key={post._id} style={{ height: '150px' }}>
+                                                        <img
+                                                            className='postBeautify'
+                                                            src={post.postUploaded}
+                                                            srcSet={post.postUploaded}
+                                                            alt={post.creatorName}
+                                                            loading="lazy"
+                                                            onClick={() => postModalAssign(currentPost)}
+                                                        />
+                                                    </ImageListItem>
+                                                )
+                                            })
+                                        }
+                                    </ImageList>
+                                    :
+                                    <p style={{ fontSize: '30px', fontWeight: 'bold', color: 'rgb(40,40,40)', margin: 'auto',height:'300px',width:'max-content' }}>No Posts yet</p>
+                            }
                         </Card>
                     </Stack>
                 </Stack>

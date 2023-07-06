@@ -12,6 +12,7 @@ const messageSchema = {
 const chatSchema = new mongoose.Schema({
     username: String,
     friendname: String,
+    activeChat:Boolean,
     showChat: Boolean,
     chats: [messageSchema]
 }, { collection: 'chat-data' })
